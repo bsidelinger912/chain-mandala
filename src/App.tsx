@@ -1,10 +1,14 @@
 import React from 'react';
-import './App.css';
 
-const web3 = (window as any).AlchemyWeb3.createAlchemyWeb3('https://eth-ropsten.alchemyapi.io/v2/key');
-const contract = require("./MyNFT.json")
-const contractAddress = ""
-const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
+import './App.css';
+// import CanvasDraw from './CanvasDraw';
+import Mandala from './Mandala';
+// import SVG from './SVG';
+
+const web3 = (window as any).AlchemyWeb3.createAlchemyWeb3(process.env.API_URL);
+const contract = require("./OnChainNFT.json");
+const contractAddress = "0x8272a54660b9ffb18d93e591d2d88c4e7ef27cd5";
+const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
 function App() {
   const [accounts, setAccounts] = React.useState<any[]>();
@@ -51,6 +55,43 @@ function App() {
 
     console.log('***** Success, hash is: ', txHash);
   }
+
+  // React.useEffect(() => {
+  //   (async function getURI() {
+  //     // const tokenURI = await nftContract.methods.tokenURI(1).call();
+  //     // console.log(tokenURI);
+
+  //     var canvas = document.getElementById("canvas") as any;
+  //     var ctx = canvas.getContext("2d");
+  //     var img = new Image();
+
+  //     img.crossOrigin = "anonymous";
+
+  //     img.onload = function () {
+
+  //         // set size proportional to image
+  //         canvas.height = canvas.width * (img.height / img.width);
+
+  //         // step 1 - resize to 50%
+  //         var oc = document.createElement('canvas'),
+  //             octx = oc.getContext('2d') as any;
+
+  //         oc.width = img.width * 0.5;
+  //         oc.height = img.height * 0.5;
+  //         octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+  //         // step 2
+  //         octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+
+  //         // step 3, resize to final size
+  //         ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+  //         0, 0, canvas.width, canvas.height);
+
+  //         console.log(canvas.toDataURL("image/png"))
+  //     }
+  //     img.src = "//i.imgur.com/SHo6Fub.jpg";
+  //   })();
+  // });
   
   return (
     <div className="App">
@@ -67,6 +108,8 @@ function App() {
             <button type="submit" className="button">Mint my NFT</button>
           </form>
         )}
+        {/* <Canvas /> */}
+        <Mandala />
       </div>
     </div>
   );
