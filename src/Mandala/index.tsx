@@ -5,8 +5,7 @@
 
 import React, { useState } from 'react';
 import { canvasHeight, canvasWidth, colors, drawInterval, iterations, startingPointEdgeBuffer } from './constants';
-import { draw, getRadian } from './functions';
-import { Shape } from './types';
+import { chooseShape, draw, getRadian } from './functions';
 
 export interface Props {
 }
@@ -43,8 +42,7 @@ const CanvasDraw: React.FC<Props> = () => {
         return;
       }
 
-      // TODO: choose from random
-      const shape: Shape = 'line';
+      const shape = chooseShape();
     
       const nextCoords = draw(ctx, x, y, radian, currentPallette, shape);
       [x, y] = nextCoords;

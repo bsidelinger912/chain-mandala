@@ -1,4 +1,4 @@
-import { Pallette } from "./types";
+import { Pallette, Shape } from "./types";
 
 export const canvasWidth = 500;
 export const canvasHeight = 500;
@@ -20,3 +20,5 @@ export const colors: Record<string, Pallette> = {
     ],
   }
 };
+
+export const allShapes: Shape[] = ['arc', 'line', 'perpendicular'];

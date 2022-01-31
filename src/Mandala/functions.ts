@@ -1,5 +1,7 @@
-import { canvasHeight, canvasWidth, lineMaxDistance, symmetry } from "./constants";
+import { drawArc } from "./arc";
+import { allShapes, canvasHeight, canvasWidth, lineMaxDistance, symmetry } from "./constants";
 import { drawLine } from "./line";
+import { drawPerpendicular } from "./perpendicular";
 import { Pallette, Shape } from "./types";
 
 export function getSymmetryPoints(x: number, y: number, radian: number) {
@@ -46,16 +48,45 @@ export const draw = (ctx: CanvasRenderingContext2D, x: number, y: number, radian
   const startPoints = getSymmetryPoints(x, y, radian);
   const endPoints = getSymmetryPoints(x2, y2, radian);
 
-  switch(shape) {
-    case 'line': 
-    default:
-      const color = pallette.tones[Math.round(Math.random() * pallette.tones.length)];
-      const width = Math.round(Math.random() * 10);
-      
-      for (var i = 0; i < startPoints.length; i++) {
+  const color = pallette.tones[Math.round(Math.random() * pallette.tones.length)];
+  const width = Math.round(Math.random() * 10);
+  const endLength = Math.round(Math.random() * lineMaxDistance);
+
+  for (var i = 0; i < startPoints.length; i++) {
+    switch(shape) {
+      case 'perpendicular':
+        drawPerpendicular(ctx, startPoints[i][0], startPoints[i][1], endPoints[i][0], endPoints[i][1], color, width, endLength, i);
+
+        break;
+      case 'arc':
+        drawArc(ctx, startPoints[i][0], startPoints[i][1], endPoints[i][0], endPoints[i][1], color, width, endLength, i);
+        
+        break;
+      case 'line': 
+      default:
         drawLine(ctx, startPoints[i][0], startPoints[i][1], endPoints[i][0], endPoints[i][1], color, width);
-      }
+    }
   }
 
   return [x2, y2];
 };
+
+export function getDistance(x1: number, y1: number, x2: number, y2: number): number{
+  let y = x2 - x1;
+  let x = y2 - y1;
+  
+  return Math.sqrt(x * x + y * y);
+}
+
+/**
+ * Weighted function to prefer arc, but still randomize
+ * @returns Shape
+ */
+export function chooseShape(): Shape {
+  const randomShape = allShapes[Math.round(Math.random() * allShapes.length)];
+
+  // weight for arc
+  const useArc = Math.random() > .5;
+
+  return useArc ? allShapes[0] : randomShape;
+}

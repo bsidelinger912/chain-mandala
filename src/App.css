@@ -1,5 +1,5 @@
 .App {
-  background-color: #fff; /* #282c34;n*/
+  background-color: #282c34;
   height: 100vh;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .Mandala_canvas {
-  border: 1px solid black;
+  border: 1px solid white;
 }
 
 .Mandala_buttonWrapper {
