@@ -3,18 +3,18 @@
  * @description 
  */
 
-import React, { useState } from 'react';
-import { canvasHeight, canvasWidth, colors, drawInterval, iterations, startingPointEdgeBuffer } from './constants';
+import React from 'react';
+import { getColors } from '../colors';
+import { canvasHeight, canvasWidth, drawInterval, iterations, startingPointEdgeBuffer } from './constants';
 import { chooseShape, draw, getRadian } from './functions';
 
 export interface Props {
+  birthDate: number;
 }
  
-const CanvasDraw: React.FC<Props> = () => {
+const CanvasDraw: React.FC<Props> = ({ birthDate }) => {
   const canvasRef = React.createRef<HTMLCanvasElement>();
   const buttonRef = React.createRef<HTMLButtonElement>();
-
-  const [currentPallette, setCurrentPallette] = useState(colors.purple);
 
   const generate = () => {
     if (!canvasRef.current) return;
@@ -25,10 +25,10 @@ const CanvasDraw: React.FC<Props> = () => {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
     // set canvas background based on current pallette
-    ctx.beginPath();
-    ctx.rect(0, 0, canvasWidth, canvasHeight);
-    ctx.fillStyle = currentPallette.backGround;
-    ctx.fill();
+    // ctx.beginPath();
+    // ctx.rect(0, 0, canvasWidth, canvasHeight);
+    // ctx.fillStyle = currentPallette.backGround;
+    // ctx.fill();
 
     const radian = getRadian(6, 12);
     let x = Math.round(Math.random() * (canvasWidth - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
@@ -44,7 +44,7 @@ const CanvasDraw: React.FC<Props> = () => {
 
       const shape = chooseShape();
     
-      const nextCoords = draw(ctx, x, y, radian, currentPallette, shape);
+      const nextCoords = draw(ctx, x, y, radian, getColors(birthDate), shape);
       [x, y] = nextCoords;
       iterationsLeft--;
     }, drawInterval);

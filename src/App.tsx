@@ -3,6 +3,7 @@ import React from 'react';
 import './App.css';
 // import CanvasDraw from './CanvasDraw';
 import Mandala from './Mandala';
+import Palette from './Palette';
 // import SVG from './SVG';
 
 const web3 = (window as any).AlchemyWeb3.createAlchemyWeb3(process.env.API_URL);
@@ -13,6 +14,8 @@ const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 function App() {
   const [accounts, setAccounts] = React.useState<any[]>();
   const [metaData, setMetaData] = React.useState<string>();
+
+  const [birthDate, setBirthDate] = React.useState(24);
 
   const connectWallet = async () => {
     const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
@@ -55,43 +58,6 @@ function App() {
 
     console.log('***** Success, hash is: ', txHash);
   }
-
-  // React.useEffect(() => {
-  //   (async function getURI() {
-  //     // const tokenURI = await nftContract.methods.tokenURI(1).call();
-  //     // console.log(tokenURI);
-
-  //     var canvas = document.getElementById("canvas") as any;
-  //     var ctx = canvas.getContext("2d");
-  //     var img = new Image();
-
-  //     img.crossOrigin = "anonymous";
-
-  //     img.onload = function () {
-
-  //         // set size proportional to image
-  //         canvas.height = canvas.width * (img.height / img.width);
-
-  //         // step 1 - resize to 50%
-  //         var oc = document.createElement('canvas'),
-  //             octx = oc.getContext('2d') as any;
-
-  //         oc.width = img.width * 0.5;
-  //         oc.height = img.height * 0.5;
-  //         octx.drawImage(img, 0, 0, oc.width, oc.height);
-
-  //         // step 2
-  //         octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
-
-  //         // step 3, resize to final size
-  //         ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
-  //         0, 0, canvas.width, canvas.height);
-
-  //         console.log(canvas.toDataURL("image/png"))
-  //     }
-  //     img.src = "//i.imgur.com/SHo6Fub.jpg";
-  //   })();
-  // });
   
   return (
     <div className="App">
@@ -102,14 +68,23 @@ function App() {
             {accounts ? <span>you connected</span> : <button className="button" onClick={connectWallet}>Connect wallet</button>}
           </div>
         </header>
-        {accounts && (
-          <form onSubmit={submit}>
-            <textarea className="input" onChange={changeText} rows={20} />
-            <button type="submit" className="button">Mint my NFT</button>
-          </form>
-        )}
-        {/* <Canvas /> */}
-        <Mandala />
+        <div className="App-main">
+          <div><Mandala birthDate={birthDate} /></div>
+          <div className="App-main-right">
+            <form>
+              <label htmlFor="birthday">What day of the month were you born?</label>
+              <select id="birthday" onChange={e => {
+                const stringValue = e.target.value;
+                const numberValue = parseInt(stringValue, 10);
+                setBirthDate(numberValue);
+              }}>
+                {Array.from(Array(31).keys()).map(key => <option value={key + 1}>{key + 1}</option>)}
+              </select>
+            </form>
+            <span>Your colors:</span>
+            <Palette birthDate={birthDate} />
+          </div>
+        </div>
       </div>
     </div>
   );

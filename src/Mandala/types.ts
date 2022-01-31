@@ -1,5 +1,4 @@
 export interface Pallette {
-  backGround: string;
   tones: string[];
 }
 

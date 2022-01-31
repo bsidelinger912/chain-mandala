@@ -21,6 +21,23 @@
   margin: 0;
 }
 
+.App-main {
+  display: flex;
+  flex-direction: row;
+}
+
+.App-main-right {
+  padding: 0 20px;
+}
+
+.App-main-right form {
+  padding-bottom: 20px;
+}
+
+.App-main-right form label {
+  margin-right: 10px;
+}
+
 .input {
   display: block;
   width: 100%;
@@ -60,4 +77,15 @@
 .Mandala_buttonWrapper button {
   cursor: pointer;
   padding: 7px 12px;
+}
+
+.Palette {
+  width: 500px;
+  height: 50px;
+  display: flex;
+  border: 1px solid white;
+}
+
+.Palette span {
+  flex-grow: 1;
 }

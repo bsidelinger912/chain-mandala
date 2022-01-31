@@ -1,15 +1,6 @@
-import { Pallette, Shape } from "./types";
+const ColorScheme = require('color-scheme');
 
-export const canvasWidth = 500;
-export const canvasHeight = 500;
-export const startingPointEdgeBuffer = 100; // if you start the algo at the edge or middle it can get too wonky, this is used to keep the start away from the edges or middle
-export const symmetry = canvasWidth;
-export const xCenter = symmetry / 2;
-export const lineMaxDistance = 200;
-export const iterations = 20;
-export const drawInterval = 500;
-
-export const colorNumbers = [
+const colorNumbers = [
   {
     hue: 30,
     dates: [1, 10, 19, 28],
@@ -57,4 +48,11 @@ export const colorNumbers = [
   },
 ];
 
-export const allShapes: Shape[] = ['arc', 'line', 'perpendicular'];
+export function getColors(birthDate: number): string[] {
+  const colorIndex = colorNumbers.findIndex(colorNumber => colorNumber.dates.find(date => date === birthDate));
+  const colorRange = colorNumbers[colorIndex];
+
+  const scheme = new ColorScheme();
+  scheme.from_hue(colorRange.hue).scheme('contrast').variation(colorRange.variation);
+  return scheme.colors().map((color: string) => `#${color}`);
+}

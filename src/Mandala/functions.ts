@@ -38,7 +38,7 @@ export function getRandomColor(pallette: Pallette): string {
   return pallette.tones[Math.round(Math.random() * pallette.tones.length)];
 }
 
-export const draw = (ctx: CanvasRenderingContext2D, x: number, y: number, radian: number, pallette: Pallette, shape: Shape) => {
+export const draw = (ctx: CanvasRenderingContext2D, x: number, y: number, radian: number, colors: string[], shape: Shape) => {
   const xDelta = Math.round((Math.random() * lineMaxDistance) - (lineMaxDistance / 2));
   const yDelta = Math.round((Math.random() * lineMaxDistance) - (lineMaxDistance / 2));
 
@@ -48,7 +48,7 @@ export const draw = (ctx: CanvasRenderingContext2D, x: number, y: number, radian
   const startPoints = getSymmetryPoints(x, y, radian);
   const endPoints = getSymmetryPoints(x2, y2, radian);
 
-  const color = pallette.tones[Math.round(Math.random() * pallette.tones.length)];
+  const color = colors[Math.round(Math.random() * colors.length)];
   const width = Math.round(Math.random() * 10);
   const endLength = Math.round(Math.random() * lineMaxDistance);
 
