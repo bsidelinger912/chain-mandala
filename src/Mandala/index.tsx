@@ -1,22 +1,28 @@
 /**
- * @class CanvasDraw
- * @description 
+ * @class Mandala
+ * @description
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { getColors } from '../colors';
-import { canvasHeight, canvasWidth, drawInterval, iterations, startingPointEdgeBuffer } from './constants';
+import Canvas from './Canvas';
+import {
+  canvasHeight, canvasWidth, drawInterval, iterations, startingPointEdgeBuffer,
+} from './constants';
 import { chooseShape, draw, getRadian } from './functions';
+import MintNFT from './MintNFT';
 
 export interface Props {
   birthDate: number;
 }
- 
-const CanvasDraw: React.FC<Props> = ({ birthDate }) => {
+
+const Mandala: React.FC<Props> = ({ birthDate }) => {
   const canvasRef = React.createRef<HTMLCanvasElement>();
   const buttonRef = React.createRef<HTMLButtonElement>();
 
-  const generate = () => {
+  const [metaDataUri, setMetaDataUri] = useState<string>();
+
+  const generate = (): void => {
     if (!canvasRef.current) return;
 
     (buttonRef.current as HTMLButtonElement).disabled = true;
@@ -39,27 +45,29 @@ const CanvasDraw: React.FC<Props> = ({ birthDate }) => {
       if (iterationsLeft < 1) {
         clearInterval(interval);
         (buttonRef.current as HTMLButtonElement).disabled = false;
+        setMetaDataUri(canvasRef.current?.toDataURL());
         return;
       }
 
       const shape = chooseShape();
-    
+
       const nextCoords = draw(ctx, x, y, radian, getColors(birthDate), shape);
       [x, y] = nextCoords;
-      iterationsLeft--;
+      iterationsLeft -= 1;
     }, drawInterval);
-  }
- 
+  };
+
   return (
     <div>
-      <canvas height={canvasHeight} width={canvasWidth} className='Mandala_canvas' ref={canvasRef} />
+      <Canvas ref={canvasRef} />
 
       <div className="Mandala_buttonWrapper">
-        <button ref={buttonRef} onClick={generate} >Generate</button>
+        <button type="button" ref={buttonRef} onClick={generate}>Generate</button>
+
+        <MintNFT metaDataUri={metaDataUri} />
       </div>
     </div>
   );
 };
 
-export default CanvasDraw;
- 
+export default Mandala;
