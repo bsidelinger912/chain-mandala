@@ -72,11 +72,18 @@
 
 .Mandala_buttonWrapper {
   padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Mandala_buttonWrapper > div {
+  width: 50%;
 }
 
 .Mandala_buttonWrapper button {
   cursor: pointer;
   padding: 7px 12px;
+  height: 40px;
 }
 
 .Palette {
@@ -88,4 +95,8 @@
 
 .Palette span {
   flex-grow: 1;
+}
+
+.MintNFT_formRow {
+  margin-bottom: 10px;
 }

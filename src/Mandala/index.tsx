@@ -14,13 +14,14 @@ import MintNFT from './MintNFT';
 
 export interface Props {
   birthDate: number;
+  account?: string;
 }
 
-const Mandala: React.FC<Props> = ({ birthDate }) => {
+const Mandala: React.FC<Props> = ({ birthDate, account }) => {
   const canvasRef = React.createRef<HTMLCanvasElement>();
   const buttonRef = React.createRef<HTMLButtonElement>();
 
-  const [metaDataUri, setMetaDataUri] = useState<string>();
+  const [imageUri, setImageUri] = useState<string>();
 
   const generate = (): void => {
     if (!canvasRef.current) return;
@@ -45,7 +46,7 @@ const Mandala: React.FC<Props> = ({ birthDate }) => {
       if (iterationsLeft < 1) {
         clearInterval(interval);
         (buttonRef.current as HTMLButtonElement).disabled = false;
-        setMetaDataUri(canvasRef.current?.toDataURL());
+        setImageUri(canvasRef.current?.toDataURL());
         return;
       }
 
@@ -64,7 +65,7 @@ const Mandala: React.FC<Props> = ({ birthDate }) => {
       <div className="Mandala_buttonWrapper">
         <button type="button" ref={buttonRef} onClick={generate}>Generate</button>
 
-        <MintNFT metaDataUri={metaDataUri} />
+        <MintNFT imageUri={imageUri} birthDate={birthDate} account={account} />
       </div>
     </div>
   );

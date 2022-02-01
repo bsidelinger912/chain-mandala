@@ -2,5 +2,5 @@
 import { NFTMetaData } from './types';
 
 export function createMetaData(data: NFTMetaData): string {
-  return `data:application/json;base64,${Buffer.from(JSON.stringify(data)).toString('base64')}`;
+  return `data:application/json;base64,${btoa(JSON.stringify(data))}`;
 }
