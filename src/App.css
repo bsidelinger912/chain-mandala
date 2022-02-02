@@ -100,3 +100,7 @@
 .MintNFT_formRow {
   margin-bottom: 10px;
 }
+
+.error {
+  color: red;
+}

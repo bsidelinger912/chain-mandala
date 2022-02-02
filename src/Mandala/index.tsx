@@ -31,11 +31,10 @@ const Mandala: React.FC<Props> = ({ birthDate, account }) => {
     const ctx = canvasRef.current.getContext('2d') as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    // set canvas background based on current pallette
-    // ctx.beginPath();
-    // ctx.rect(0, 0, canvasWidth, canvasHeight);
-    // ctx.fillStyle = currentPallette.backGround;
-    // ctx.fill();
+    ctx.beginPath();
+    ctx.rect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = '#282c34';
+    ctx.fill();
 
     const radian = getRadian(6, 12);
     let x = Math.round(Math.random() * (canvasWidth - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;

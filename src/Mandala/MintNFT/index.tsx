@@ -23,6 +23,9 @@ export interface Props {
 const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
   const [estimatedGas, setEstimatedGas] = useState<number>();
   const [transactionHash, setTransactionHash] = useState<string>();
+  const [maxGas, setMaxGas] = useState<number>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
 
   const getEncodedMetaData = (): string | undefined => {
     if (!imageUri) return;
@@ -43,6 +46,8 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
   const estimateGas = async (): Promise<void> => {
     const encodedMetaData = getEncodedMetaData();
 
+    console.log(encodedMetaData);
+
     const tx = {
       from: account,
       to: contractAddress,
@@ -54,32 +59,47 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
     setEstimatedGas(gasEstimate);
   };
 
-  const mint = async (): Promise<void> => {
+  const mint = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+
     if (!imageUri) return;
 
-    const encodedMetaData = getEncodedMetaData();
+    setLoading(true);
+    setError(undefined);
 
-    const tx = {
-      from: account,
-      to: contractAddress,
-      gas: '800000000',
-      data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
-    };
+    try {
+      const encodedMetaData = getEncodedMetaData();
 
-    const txHash = await (window as any).ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [tx],
-    });
+      const tx = {
+        from: account,
+        to: contractAddress,
+        gas: maxGas?.toString(),
+        data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
+      };
 
-    setTransactionHash(txHash);
-    console.log('***** Success, hash is: ', txHash);
+      const txHash = await (window as any).ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [tx],
+      });
+
+      setTransactionHash(txHash);
+      console.log('***** Success, hash is: ', txHash);
+    } catch (err: any) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     if (account && imageUri) {
       setEstimatedGas(undefined);
-      estimateGas();
       setTransactionHash(undefined);
+      setMaxGas(undefined);
+      setError(undefined);
+
+      estimateGas();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUri, account]);
@@ -91,13 +111,24 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
     text = `Estimated gas: ${estimatedGas}`;
   } else if (imageUri && account) {
     text = 'Estimating...';
+  } else if (imageUri && !account) {
+    return <span>Connect Wallet to mint</span>;
+  } else if (!imageUri) {
+    return null;
   }
 
   return (
     <div className="MintNFT">
       <form onSubmit={mint}>
         {text ? <div className="MintNFT_formRow">{text}</div> : null}
-        <button type="submit" disabled={!imageUri || !account || !estimatedGas || !!transactionHash}>Mint NFT</button>
+        <div className="MintNFT_formRow">
+          <label htmlFor="maxGas">
+            Maximum gas:
+            <input type="text" id="maxGas" name="maxGas" value={maxGas} onChange={(e) => setMaxGas(parseInt(e.target.value, 10))} />
+          </label>
+        </div>
+        {error ? <span className="error">{error}</span> : null}
+        <button type="submit" disabled={!imageUri || !account || !estimatedGas || !!transactionHash || !maxGas || !!error}>Mint NFT</button>
       </form>
     </div>
   );
