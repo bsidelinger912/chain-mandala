@@ -4,6 +4,8 @@
  */
 
 import React, { useState } from 'react';
+import pica from 'pica';
+
 import { getColors } from '../colors';
 import Canvas from './Canvas';
 import {
@@ -19,6 +21,7 @@ export interface Props {
 
 const Mandala: React.FC<Props> = ({ birthDate, account }) => {
   const canvasRef = React.createRef<HTMLCanvasElement>();
+  const hiddenCanvasRef = React.createRef<HTMLCanvasElement>();
   const buttonRef = React.createRef<HTMLButtonElement>();
 
   const [imageUri, setImageUri] = useState<string>();
@@ -45,7 +48,18 @@ const Mandala: React.FC<Props> = ({ birthDate, account }) => {
       if (iterationsLeft < 1) {
         clearInterval(interval);
         (buttonRef.current as HTMLButtonElement).disabled = false;
-        setImageUri(canvasRef.current?.toDataURL());
+
+        if (!canvasRef.current || !hiddenCanvasRef.current) {
+          return;
+        }
+
+        // setImageUri(canvasRef.current?.toDataURL('image/png', 0.1));
+
+        const picaInstance = pica();
+        picaInstance.resize(canvasRef.current, hiddenCanvasRef.current).then(() => {
+          setImageUri(hiddenCanvasRef.current?.toDataURL('image/png', 0.1));
+        });
+
         return;
       }
 
@@ -66,6 +80,8 @@ const Mandala: React.FC<Props> = ({ birthDate, account }) => {
 
         <MintNFT imageUri={imageUri} birthDate={birthDate} account={account} />
       </div>
+
+      <canvas width={100} height={100} className="hiddenCanvas" ref={hiddenCanvasRef} />
     </div>
   );
 };

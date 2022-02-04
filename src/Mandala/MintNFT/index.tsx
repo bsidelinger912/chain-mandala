@@ -46,8 +46,6 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
   const estimateGas = async (): Promise<void> => {
     const encodedMetaData = getEncodedMetaData();
 
-    console.log(encodedMetaData);
-
     const tx = {
       from: account,
       to: contractAddress,
@@ -100,6 +98,7 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
       setError(undefined);
 
       estimateGas();
+      console.log(imageUri);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUri, account]);
@@ -124,7 +123,7 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
         <div className="MintNFT_formRow">
           <label htmlFor="maxGas">
             Maximum gas:
-            <input type="text" id="maxGas" name="maxGas" value={maxGas} onChange={(e) => setMaxGas(parseInt(e.target.value, 10))} />
+            <input type="text" id="maxGas" name="maxGas" value={maxGas || ''} onChange={(e) => setMaxGas(parseInt(e.target.value, 10))} />
           </label>
         </div>
         {error ? <span className="error">{error}</span> : null}
