@@ -4,15 +4,18 @@
  */
 
 import React, { useState } from 'react';
-import pica from 'pica';
+import svgToMiniDataURI from 'mini-svg-data-uri';
 
 import { getColors } from '../colors';
 import Canvas from './Canvas';
 import {
   canvasHeight, canvasWidth, drawInterval, iterations, startingPointEdgeBuffer,
 } from './constants';
-import { chooseShape, draw, getRadian } from './functions';
+import {
+  chooseShape, getCurve, getLine, getPerpendicular, getRadian,
+} from './functions';
 import MintNFT from './MintNFT';
+import { Curve, Line, Perpendicular } from './types';
 
 export interface Props {
   birthDate: number;
@@ -20,68 +23,112 @@ export interface Props {
 }
 
 const Mandala: React.FC<Props> = ({ birthDate, account }) => {
-  const canvasRef = React.createRef<HTMLCanvasElement>();
-  const hiddenCanvasRef = React.createRef<HTMLCanvasElement>();
-  const buttonRef = React.createRef<HTMLButtonElement>();
+  const buttonRef = React.useRef<HTMLButtonElement>();
+  const svgRef = React.useRef<SVGSVGElement>();
 
   const [imageUri, setImageUri] = useState<string>();
+  const [lines, setLines] = useState<Line[]>([]);
+  const [perpendiculars, setPerpendiculars] = useState<Perpendicular[]>([]);
+  const [curves, setCurves] = useState<Curve[]>([]);
 
   const generate = (): void => {
-    if (!canvasRef.current) return;
-
     (buttonRef.current as HTMLButtonElement).disabled = true;
 
-    const ctx = canvasRef.current.getContext('2d') as CanvasRenderingContext2D;
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    ctx.beginPath();
-    ctx.rect(0, 0, canvasWidth, canvasHeight);
-    ctx.fillStyle = '#282c34';
-    ctx.fill();
-
-    const radian = getRadian(6, 12);
-    let x = Math.round(Math.random() * (canvasWidth - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
-    let y = Math.round(Math.random() * (canvasHeight - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
+    const radian = 6; // getRadian(6, 12);
+    const x = Math.round(Math.random() * (canvasWidth - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
+    const y = Math.round(Math.random() * (canvasHeight - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
     let iterationsLeft = iterations;
+
+    setLines([]);
+    setPerpendiculars([]);
+    setCurves([]);
 
     const interval = setInterval(() => {
       if (iterationsLeft < 1) {
         clearInterval(interval);
         (buttonRef.current as HTMLButtonElement).disabled = false;
 
-        if (!canvasRef.current || !hiddenCanvasRef.current) {
-          return;
-        }
-
-        // setImageUri(canvasRef.current?.toDataURL('image/png', 0.1));
-
-        const picaInstance = pica();
-        picaInstance.resize(canvasRef.current, hiddenCanvasRef.current).then(() => {
-          setImageUri(hiddenCanvasRef.current?.toDataURL('image/png', 0.1));
-        });
+        const image = svgRef.current?.outerHTML as string;
+        setImageUri(svgToMiniDataURI(image));
 
         return;
       }
 
       const shape = chooseShape();
 
-      const nextCoords = draw(ctx, x, y, radian, getColors(birthDate), shape);
-      [x, y] = nextCoords;
+      switch (shape) {
+        case 'perpendicular':
+          setPerpendiculars((currentPerpendiculars) => currentPerpendiculars.concat(getPerpendicular(x, y, radian, getColors(birthDate))));
+          break;
+
+        case 'arc':
+          setCurves((currentCurves) => currentCurves.concat(getCurve(x, y, radian, getColors(birthDate))));
+          break;
+
+        case 'line':
+        default:
+          setLines((currentLines) => currentLines.concat(getLine(x, y, radian, getColors(birthDate))));
+      }
+
       iterationsLeft -= 1;
     }, drawInterval);
   };
 
   return (
     <div>
-      <Canvas ref={canvasRef} />
+      <svg
+        ref={svgRef as any}
+        className="Mandala_svg"
+        viewBox="0 0 500 500"
+        style={{ backgroundColor: '#282c34' }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {lines.map((line) => (
+          <line
+            key={`${line.x1}${line.y1}${line.x2}${line.y2}`}
+            x1={line.x1}
+            y1={line.y1}
+            x2={line.x2}
+            y2={line.y2}
+            stroke={line.color}
+            strokeWidth={line.width}
+          />
+        ))}
+        {perpendiculars.map((perpendicular) => (
+          <React.Fragment key={`${perpendicular.x1}${perpendicular.y1}${perpendicular.x2}${perpendicular.y2}`}>
+            <line
+              x1={perpendicular.x1}
+              y1={perpendicular.y1}
+              x2={perpendicular.x2}
+              y2={perpendicular.y2}
+              stroke={perpendicular.color}
+              strokeWidth={perpendicular.width}
+            />
+            <line
+              x1={perpendicular.x2}
+              y1={perpendicular.y2}
+              x2={perpendicular.x3}
+              y2={perpendicular.y3}
+              stroke={perpendicular.color}
+              strokeWidth={perpendicular.width}
+            />
+          </React.Fragment>
+        ))}
+        {curves.map((curve) => (
+          <path
+            d={`M ${curve.x1} ${curve.y1} Q ${curve.x2} ${curve.y2} ${curve.x3} ${curve.y3}`}
+            stroke={curve.color}
+            strokeWidth={curve.width}
+            fill="transparent"
+          />
+        ))}
+      </svg>
 
       <div className="Mandala_buttonWrapper">
-        <button type="button" ref={buttonRef} onClick={generate}>Generate</button>
+        <button type="button" ref={buttonRef as any} onClick={generate}>Generate</button>
 
         <MintNFT imageUri={imageUri} birthDate={birthDate} account={account} />
       </div>
-
-      <canvas width={100} height={100} className="hiddenCanvas" ref={hiddenCanvasRef} />
     </div>
   );
 };

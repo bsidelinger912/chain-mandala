@@ -4,7 +4,10 @@ import {
 } from './constants';
 import { drawLine } from './line';
 import { drawPerpendicular } from './perpendicular';
-import { Pallette, Shape } from './types';
+import {
+  Curve,
+  Line, Pallette, Perpendicular, Shape,
+} from './types';
 
 export function getSymmetryPoints(x: number, y: number, radian: number): number[][] {
   // The coordinate system has its origin at the center of the canvas,
@@ -40,7 +43,7 @@ export function getRandomColor(pallette: Pallette): string {
   return pallette.tones[Math.round(Math.random() * pallette.tones.length)];
 }
 
-export const draw = (ctx: CanvasRenderingContext2D, x: number, y: number, radian: number, colors: string[], shape: Shape): [number, number] => {
+export const getLine = (x: number, y: number, radian: number, colors: string[]): Line[] => {
   const xDelta = Math.round((Math.random() * lineMaxDistance) - (lineMaxDistance / 2));
   const yDelta = Math.round((Math.random() * lineMaxDistance) - (lineMaxDistance / 2));
 
@@ -51,27 +54,40 @@ export const draw = (ctx: CanvasRenderingContext2D, x: number, y: number, radian
   const endPoints = getSymmetryPoints(x2, y2, radian);
 
   const color = colors[Math.round(Math.random() * colors.length)];
-  const width = Math.round(Math.random() * 10);
+  const width = Math.round(Math.random() * 5);
+
+  return startPoints.map((_, i) => ({
+    x1: startPoints[i][0],
+    y1: startPoints[i][1],
+    x2: endPoints[i][0],
+    y2: endPoints[i][1],
+    color,
+    width,
+  }));
+};
+
+export function getPerpendicular(x: number, y: number, radian: number, colors: string[]): Perpendicular[] {
   const endLength = Math.round(Math.random() * lineMaxDistance);
 
-  for (let i = 0; i < startPoints.length; i++) {
-    switch (shape) {
-      case 'perpendicular':
-        drawPerpendicular(ctx, startPoints[i][0], startPoints[i][1], endPoints[i][0], endPoints[i][1], color, width, endLength, i);
+  return getLine(x, y, radian, colors).map((line, index) => {
+    const {
+      x1, y1, x2, y2,
+    } = line;
+    let px = y1 - y2;
+    let py = x2 - x1;
+    const len = endLength / Math.hypot(px, py);
+    px *= len;
+    py *= len;
 
-        break;
-      case 'arc':
-        drawArc(ctx, startPoints[i][0], startPoints[i][1], endPoints[i][0], endPoints[i][1], color, width, endLength, i);
+    const endPoint = (index % 2 === 0) ? { x: x2 + px, y: y2 + py } : { x: x2 - px, y: y2 - py };
 
-        break;
-      case 'line':
-      default:
-        drawLine(ctx, startPoints[i][0], startPoints[i][1], endPoints[i][0], endPoints[i][1], color, width);
-    }
-  }
+    return { ...line, x3: endPoint.x, y3: endPoint.y };
+  });
+}
 
-  return [x2, y2];
-};
+export function getCurve(x: number, y: number, radian: number, colors: string[]): Curve[] {
+  return getPerpendicular(x, y, radian, colors);
+}
 
 export function getDistance(x1: number, y1: number, x2: number, y2: number): number {
   const y = x2 - x1;

@@ -82,7 +82,7 @@ const App: React.FC = () => {
                     setBirthDate(numberValue);
                   }}
                 >
-                  {Array.from(Array(31).keys()).map((key) => <option value={key + 1}>{key + 1}</option>)}
+                  {Array.from(Array(31).keys()).map((key) => <option key={key + 1} value={key + 1}>{key + 1}</option>)}
                 </select>
               </label>
             </form>

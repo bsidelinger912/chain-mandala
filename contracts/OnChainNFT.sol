@@ -1,17 +1,28 @@
 //Contract based on [https://docs.openzeppelin.com/contracts/3.x/erc721](https://docs.openzeppelin.com/contracts/3.x/erc721)
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.3;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 
-contract OnChainNFT is ERC721URIStorage, Ownable {
+contract OnChainNFT is Initializable, ERC721URIStorageUpgradeable, OwnableUpgradeable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    constructor() public ERC721("OnChainNFT", "NFT") {}
+    function initialize() public initializer {
+        __ERC721_init("OnChainNFT", "NFT");
+        __Ownable_init();
+    }
+
+    function getLatestTokenId()
+        public
+        view
+        returns (uint256)
+    {
+        return _tokenIds.current();
+    }
 
     function mintNFT(address recipient, string memory tokenURI)
         public onlyOwner
