@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 const ColorScheme = require('color-scheme');
 
 const colorNumbers = [
@@ -49,7 +50,11 @@ const colorNumbers = [
 ];
 
 export function getColors(birthDate: number): string[] {
-  const colorIndex = colorNumbers.findIndex(colorNumber => colorNumber.dates.find(date => date === birthDate));
+  let colorIndex = colorNumbers.findIndex((colorNumber) => colorNumber.dates.find((date) => date === birthDate));
+  if (colorIndex < 0) {
+    colorIndex = Math.round(Math.random() * colorNumbers.length);
+  }
+
   const colorRange = colorNumbers[colorIndex];
 
   const scheme = new ColorScheme();

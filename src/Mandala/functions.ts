@@ -1,9 +1,6 @@
-import { drawArc } from './arc';
 import {
   allShapes, canvasHeight, canvasWidth, lineMaxDistance, symmetry,
 } from './constants';
-import { drawLine } from './line';
-import { drawPerpendicular } from './perpendicular';
 import {
   Curve,
   Line, Pallette, Perpendicular, Shape,
@@ -37,6 +34,10 @@ export function getRadian(start: number, finish: number): number {
   const random = Math.round((Math.random() * start) + finish - start);
 
   return (random % 2 === 0) ? random : random + 1;
+}
+
+export function getIterations(radian: number): number {
+  return Math.ceil(30 / radian);
 }
 
 export function getRandomColor(pallette: Pallette): string {

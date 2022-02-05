@@ -6,7 +6,6 @@ export const startingPointEdgeBuffer = 100; // if you start the algo at the edge
 export const symmetry = canvasWidth;
 export const xCenter = symmetry / 2;
 export const lineMaxDistance = 200;
-export const iterations = 5;
 export const drawInterval = 500;
 
 export const colorNumbers = [

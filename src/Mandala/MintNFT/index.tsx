@@ -49,6 +49,11 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
 
     const gasEstimate = await web3.eth.estimateGas(tx);
     setEstimatedGas(gasEstimate);
+
+    // divide gas by ten, then round up to nearest thousandth, then set that ad default max gas from user
+    const divided = Math.round(gasEstimate / 10);
+    const rounded = Math.ceil(divided / 1000) * 1000;
+    setMaxGas(rounded);
   };
 
   const mint = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -97,9 +102,13 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUri, account]);
 
-  let text = '';
+  let text: React.ReactNode = '';
   if (transactionHash) {
-    text = `Success: Transaction Hash: ${transactionHash}`;
+    text = (
+      <a href={`https://mumbai.polygonscan.com/tx/${transactionHash}`} target="_blank" rel="noreferrer">
+        {`Success: Transaction Hash: ${transactionHash}`}
+      </a>
+    );
   } else if (estimatedGas) {
     text = `Estimated gas: ${estimatedGas}`;
   } else if (imageUri && account) {

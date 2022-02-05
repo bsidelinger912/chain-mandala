@@ -1,6 +1,6 @@
 /**
  * @class Palette
- * @description 
+ * @description
  */
 
 import React from 'react';
@@ -15,7 +15,7 @@ const Palette: React.FC<Props> = ({ birthDate }) => {
 
   return (
     <div className="Palette">
-      {colors.map(color => <span key={color} style={{backgroundColor: color }} />)}
+      {colors.map((color) => <span key={color} style={{ backgroundColor: color }} />)}
     </div>
   );
 };

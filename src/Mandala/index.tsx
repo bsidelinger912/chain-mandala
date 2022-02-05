@@ -8,10 +8,10 @@ import svgToMiniDataURI from 'mini-svg-data-uri';
 
 import { getColors } from '../colors';
 import {
-  canvasHeight, canvasWidth, drawInterval, iterations, startingPointEdgeBuffer,
+  canvasHeight, canvasWidth, drawInterval, startingPointEdgeBuffer,
 } from './constants';
 import {
-  chooseShape, getCurve, getLine, getPerpendicular, getRadian,
+  chooseShape, getCurve, getIterations, getLine, getPerpendicular, getRadian,
 } from './functions';
 import MintNFT from './MintNFT';
 import { Curve, Line, Perpendicular } from './types';
@@ -33,10 +33,10 @@ const Mandala: React.FC<Props> = ({ birthDate, account }) => {
   const generate = (): void => {
     (buttonRef.current as HTMLButtonElement).disabled = true;
 
-    const radian = 6; // getRadian(6, 12);
+    const radian = getRadian(6, 10);
     const x = Math.round(Math.random() * (canvasWidth - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
     const y = Math.round(Math.random() * (canvasHeight - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
-    let iterationsLeft = iterations;
+    let iterationsLeft = getIterations(radian);
 
     setLines([]);
     setPerpendiculars([]);
