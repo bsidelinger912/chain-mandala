@@ -32,6 +32,7 @@
      "@typescript-eslint/no-use-before-define":[
         "error"
      ],
+     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
      "react/jsx-filename-extension":[
         "warn",
         {

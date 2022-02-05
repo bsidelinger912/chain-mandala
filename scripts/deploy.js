@@ -10,6 +10,7 @@ async function main() {
   // Start deployment, returning a promise that resolves to a contract object
   // const myNFT = await MyNFT.deploy();
   const myNFT = await upgrades.deployProxy(MyNFT);
+  // await myNFT.deployed();
   console.log('Contract deployed to address:', myNFT.address);
 }
 

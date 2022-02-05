@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import svgToMiniDataURI from 'mini-svg-data-uri';
 
 import { getColors } from '../colors';
-import Canvas from './Canvas';
 import {
   canvasHeight, canvasWidth, drawInterval, iterations, startingPointEdgeBuffer,
 } from './constants';

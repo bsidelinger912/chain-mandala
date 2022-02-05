@@ -4,16 +4,9 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { NFTMetaData, WindowWithWeb3 } from '../../types';
+import { NFTMetaData } from '../../types';
 import { createMetaData } from '../../util';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires, import/extensions
-const contract = require('../../OnChainNFT.json');
-
-const web3 = (window as unknown as WindowWithWeb3).AlchemyWeb3.createAlchemyWeb3(process.env.API_URL as string);
-const oldcontractAddress = '0x8272a54660b9ffb18d93e591d2d88c4e7ef27cd5';
-const newContractAddress = '0x14D38b6d8FB34f355537c6eECa3b21F741D7eA8b';
-const nftContract = new web3.eth.Contract(contract.abi, newContractAddress);
+import { contractAddress, nftContract, web3 } from '../../web3';
 
 export interface Props {
   imageUri?: string;
@@ -27,16 +20,6 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
   const [maxGas, setMaxGas] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
-
-  useEffect(() => {
-    console.log(nftContract.methods);
-    nftContract.methods.tokenURI(1).call().then((resp: any) => {
-      console.log('**** success *****');
-      console.log(resp);
-    }).catch((e: unknown) => {
-      console.error(e);
-    });
-  }, []);
 
   const getEncodedMetaData = (): string | undefined => {
     if (!imageUri) return;
@@ -59,7 +42,7 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
 
     const tx = {
       from: account,
-      to: newContractAddress,
+      to: contractAddress,
       gas: '800000000',
       data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
     };
@@ -81,7 +64,7 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
 
       const tx = {
         from: account,
-        to: newContractAddress,
+        to: contractAddress,
         gas: maxGas?.toString(),
         data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
       };
