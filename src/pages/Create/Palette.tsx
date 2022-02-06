@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { getColors } from './colors';
+import { getColors } from '../../colors';
 
 export interface Props {
   birthDate: number;

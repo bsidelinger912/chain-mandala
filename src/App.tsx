@@ -1,14 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Routes, Route } from 'react-router-dom';
 
 import './App.css';
-import AuthProvider, { useAuth } from './auth/AuthProvider';
+import AuthProvider from './auth/AuthProvider';
+import ChainDataProvider from './chainData/Provider';
 import { pageWidth, textColor } from './cssConstants';
 import Header from './Header';
 
-import Mandala from './Mandala';
-import Palette from './Palette';
-import PreviousNFTs from './PreviousNFTs.tsx';
+import Home from './pages/Home';
+import Create from './pages/Create';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -20,43 +21,20 @@ const Page = styled.div`
   margin: 0 auto;
 `;
 
-const App: React.FC = () => {
-  const [birthDate, setBirthDate] = React.useState(24);
-
-  return (
-    <AuthProvider>
+const App: React.FC = () => (
+  <AuthProvider>
+    <ChainDataProvider>
       <Wrapper>
         <Page>
           <Header />
-          <div className="App-main">
-            <div><Mandala birthDate={birthDate} /></div>
-
-            <div className="App-main-right">
-              <form>
-                <label htmlFor="birthday">
-                  What day of the month were you born?
-                  <select
-                    name="birthday"
-                    id="birthday"
-                    onChange={(e) => {
-                      const stringValue = e.target.value;
-                      const numberValue = parseInt(stringValue, 10);
-                      setBirthDate(numberValue);
-                    }}
-                  >
-                    {Array.from(Array(31).keys()).map((key) => <option key={key + 1} value={key + 1}>{key + 1}</option>)}
-                  </select>
-                </label>
-              </form>
-              <span>Your colors:</span>
-              <Palette birthDate={birthDate} />
-            </div>
-          </div>
-          <PreviousNFTs />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<Create />} />
+          </Routes>
         </Page>
       </Wrapper>
-    </AuthProvider>
-  );
-};
+    </ChainDataProvider>
+  </AuthProvider>
+);
 
 export default App;

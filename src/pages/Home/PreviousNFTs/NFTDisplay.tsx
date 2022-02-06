@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import { NFTMetaData } from '../types';
+import { NFTMetaData } from '../../../types';
 
 export interface Props {
   metaData: NFTMetaData;

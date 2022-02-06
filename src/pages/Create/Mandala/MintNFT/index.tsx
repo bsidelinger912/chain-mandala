@@ -4,10 +4,11 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../auth/AuthProvider';
-import { NFTMetaData } from '../../types';
-import { createMetaData } from '../../util';
-import { contractAddress, nftContract, web3 } from '../../web3';
+
+import { useAuth } from '../../../../auth/AuthProvider';
+import { NFTMetaData } from '../../../../types';
+import { createMetaData } from '../../../../util';
+import { contractAddress, nftContract, web3 } from '../../../../web3';
 
 export interface Props {
   imageUri?: string;

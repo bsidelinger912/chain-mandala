@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import svgToMiniDataURI from 'mini-svg-data-uri';
 
-import { getColors } from '../colors';
+import { getColors } from '../../../colors';
 import {
   canvasHeight, canvasWidth, drawInterval, startingPointEdgeBuffer,
 } from './constants';
@@ -15,7 +15,7 @@ import {
 } from './functions';
 import MintNFT from './MintNFT';
 import { Curve, Line, Perpendicular } from './types';
-import { useAuth } from '../auth/AuthProvider';
+import { useAuth } from '../../../auth/AuthProvider';
 
 export interface Props {
   birthDate: number;

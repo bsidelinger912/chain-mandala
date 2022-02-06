@@ -16,6 +16,7 @@ const Main = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 15px 0;
+  margin: 0 0 20px;
 `;
 
 const RightColumn = styled.div``;
@@ -25,7 +26,11 @@ const Header: React.FC = () => {
 
   return (
     <Main>
-      <Typography variant="h2">On-chain Mandala</Typography>
+      <div>
+        <Typography variant="h2">On-chain Mandala</Typography>
+        <Typography variant="h5">Digital art with permanence</Typography>
+      </div>
+
       <RightColumn className="App-header-right">
         {account
           ? <Typography>Connected</Typography>
