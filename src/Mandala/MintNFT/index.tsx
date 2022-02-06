@@ -4,22 +4,24 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../auth/AuthProvider';
 import { NFTMetaData } from '../../types';
 import { createMetaData } from '../../util';
 import { contractAddress, nftContract, web3 } from '../../web3';
 
 export interface Props {
   imageUri?: string;
-  account?: string;
   birthDate: number;
 }
 
-const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
+const MintNFT: React.FC<Props> = ({ imageUri, birthDate }) => {
   const [estimatedGas, setEstimatedGas] = useState<number>();
   const [transactionHash, setTransactionHash] = useState<string>();
   const [maxGas, setMaxGas] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
+
+  const { account } = useAuth();
 
   const getEncodedMetaData = (): string | undefined => {
     if (!imageUri) return;
@@ -41,7 +43,7 @@ const MintNFT: React.FC<Props> = ({ imageUri, birthDate, account }) => {
     const encodedMetaData = getEncodedMetaData();
 
     const tx = {
-      from: account,
+      from: account as string,
       to: contractAddress,
       gas: '800000000',
       data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),

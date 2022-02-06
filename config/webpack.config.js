@@ -185,6 +185,7 @@ module.exports = function (webpackEnv) {
   };
 
   return {
+    ignoreWarnings: [/Failed to parse source map/],
     target: ['browserslist'],
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     // Stop compilation early in production
@@ -332,6 +333,16 @@ module.exports = function (webpackEnv) {
           babelRuntimeRegenerator,
         ]),
       ],
+      fallback: {
+        "os": false,
+        "url": false,
+        "http": false,
+        "https": false,
+        "buffer": require.resolve('buffer/'),
+        "stream": require.resolve("stream-browserify"),
+        "assert": false,
+        "crypto": require.resolve('crypto-browserify'), //if you want to use this module also don't forget npm i crypto-browserify 
+      }, 
     },
     module: {
       strictExportPresence: true,
@@ -560,6 +571,9 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+      }),
       new Dotenv({
         path: `.env.${process.env.NODE_ENV}`
       }),
