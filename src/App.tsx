@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Routes, Route } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import './App.css';
 import AuthProvider from './auth/AuthProvider';
@@ -10,6 +12,14 @@ import Header from './Header';
 
 import Home from './pages/Home';
 import Create from './pages/Create';
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
+console.log(theme);
 
 const Wrapper = styled.div`
   width: 100%;
@@ -22,19 +32,23 @@ const Page = styled.div`
 `;
 
 const App: React.FC = () => (
-  <AuthProvider>
-    <ChainDataProvider>
-      <Wrapper>
-        <Page>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/create" element={<Create />} />
-          </Routes>
-        </Page>
-      </Wrapper>
-    </ChainDataProvider>
-  </AuthProvider>
+  <RecoilRoot>
+    <AuthProvider>
+      <ChainDataProvider>
+        <ThemeProvider theme={theme}>
+          <Wrapper>
+            <Page>
+              <Header />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/create" element={<Create />} />
+              </Routes>
+            </Page>
+          </Wrapper>
+        </ThemeProvider>
+      </ChainDataProvider>
+    </AuthProvider>
+  </RecoilRoot>
 );
 
 export default App;

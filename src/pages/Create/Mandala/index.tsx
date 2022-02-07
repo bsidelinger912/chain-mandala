@@ -9,12 +9,12 @@ import svgToMiniDataURI from 'mini-svg-data-uri';
 import { getColors } from '../../../colors';
 import {
   canvasHeight, canvasWidth, drawInterval, startingPointEdgeBuffer,
-} from './constants';
+} from '../constants';
 import {
   chooseShape, getCurve, getIterations, getLine, getPerpendicular, getRadian,
-} from './functions';
+} from '../functions';
 import MintNFT from './MintNFT';
-import { Curve, Line, Perpendicular } from './types';
+import { Curve, Line, Perpendicular } from '../types';
 import { useAuth } from '../../../auth/AuthProvider';
 
 export interface Props {

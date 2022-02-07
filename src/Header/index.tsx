@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 
 import { useAuth } from '../auth/AuthProvider';
 
@@ -19,6 +20,11 @@ const Main = styled.header`
   margin: 0 0 20px;
 `;
 
+const Title = styled(Typography)`
+  color: white;
+  text-decoration: none;
+` as typeof Typography;
+
 const RightColumn = styled.div``;
 
 const Header: React.FC = () => {
@@ -27,7 +33,7 @@ const Header: React.FC = () => {
   return (
     <Main>
       <div>
-        <Typography variant="h2">On-chain Mandala</Typography>
+        <Title component={Link} to="/" variant="h2">On-chain Mandala</Title>
         <Typography variant="h5">Digital art with permanence</Typography>
       </div>
 
