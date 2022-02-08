@@ -15,7 +15,6 @@ import {
 } from '../functions';
 import MintNFT from './MintNFT';
 import { Curve, Line, Perpendicular } from '../types';
-import { useAuth } from '../../../auth/AuthProvider';
 
 export interface Props {
   birthDate: number;
@@ -29,8 +28,6 @@ const Mandala: React.FC<Props> = ({ birthDate }) => {
   const [lines, setLines] = useState<Line[]>([]);
   const [perpendiculars, setPerpendiculars] = useState<Perpendicular[]>([]);
   const [curves, setCurves] = useState<Curve[]>([]);
-
-  const { account } = useAuth();
 
   const generate = (): void => {
     (buttonRef.current as HTMLButtonElement).disabled = true;
@@ -78,7 +75,7 @@ const Mandala: React.FC<Props> = ({ birthDate }) => {
   return (
     <div>
       <svg
-        ref={svgRef as any}
+        ref={svgRef as React.LegacyRef<SVGSVGElement>}
         className="Mandala_svg"
         viewBox="0 0 500 500"
         style={{ backgroundColor: '#282c34' }}
@@ -126,7 +123,7 @@ const Mandala: React.FC<Props> = ({ birthDate }) => {
       </svg>
 
       <div className="Mandala_buttonWrapper">
-        <button type="button" ref={buttonRef as any} onClick={generate}>Generate</button>
+        <button type="button" ref={buttonRef as React.LegacyRef<HTMLButtonElement>} onClick={generate}>Generate</button>
 
         <MintNFT imageUri={imageUri} birthDate={birthDate} />
       </div>

@@ -6,7 +6,7 @@ import { createMetaData } from '../../../util';
 import { contractAddress, nftContract, web3 } from '../../../web3';
 import imageUri from '../atoms/imageUri';
 
-interface UseMintNFT {
+export interface UseMintNFT {
   gasEstimate: {
     loading: boolean;
     estimate?: number;
