@@ -7,13 +7,15 @@ interface Shapes {
   curves: Curve[];
 }
 
+export const emptyShapes: Shapes = {
+  lines: [],
+  perpendiculars: [],
+  curves: [],
+};
+
 const shapes = atom<Shapes>({
   key: 'mandala-nft-shapes',
-  default: {
-    lines: [],
-    perpendiculars: [],
-    curves: [],
-  },
+  default: emptyShapes,
 });
 
 export default shapes;

@@ -51,6 +51,7 @@ const Preview = React.forwardRef<SVGSVGElement>((_, ref) => {
         ))}
         {curves.map((curve) => (
           <path
+            key={`${curve.x1}${curve.y1}${curve.x2}${curve.y2}`}
             d={`M ${curve.x1} ${curve.y1} Q ${curve.x2} ${curve.y2} ${curve.x3} ${curve.y3}`}
             stroke={curve.color}
             strokeWidth={curve.width}

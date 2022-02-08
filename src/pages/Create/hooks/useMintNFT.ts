@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useAuth } from '../../../auth/AuthProvider';
 import { NFTMetaData } from '../../../types';
 import { createMetaData } from '../../../util';
 import { contractAddress, nftContract, web3 } from '../../../web3';
 import imageUri from '../atoms/imageUri';
+import shapes, { emptyShapes } from '../atoms/shapes';
 
 export interface UseMintNFT {
   gasEstimate: {
@@ -29,7 +30,8 @@ const getEncodedMetaData = (image: string): string | undefined => {
 };
 
 export default function useMintNFT(): UseMintNFT {
-  const [imageUriState] = useRecoilState(imageUri);
+  const [imageUriState, setImageUriState] = useRecoilState(imageUri);
+  const setShapesState = useSetRecoilState(shapes);
 
   const [estimateLoading, setEstimateLoading] = useState(false);
   const [estimate, setEstimate] = useState<number>();
@@ -71,6 +73,9 @@ export default function useMintNFT(): UseMintNFT {
       return;
     }
 
+    setMintLoading(true);
+    setMintError(undefined);
+
     try {
       const encodedMetaData = getEncodedMetaData(imageUriState as string);
 
@@ -81,12 +86,15 @@ export default function useMintNFT(): UseMintNFT {
         data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
       };
 
+      // TODO: use web3??
       const txHash = await (window as any).ethereum.request({
         method: 'eth_sendTransaction',
         params: [tx],
       });
 
       setTransactionHash(txHash);
+      setImageUriState(undefined);
+      setShapesState(emptyShapes);
     } catch (err: any) {
       setMintError(err.message);
     } finally {
@@ -97,6 +105,7 @@ export default function useMintNFT(): UseMintNFT {
   useEffect(() => {
     if (imageUriState) {
       estimateGas();
+      setMintError(undefined);
     }
   }, [estimateGas, imageUriState]);
 

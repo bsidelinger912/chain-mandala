@@ -19,8 +19,6 @@ const theme = createTheme({
   },
 });
 
-console.log(theme);
-
 const Wrapper = styled.div`
   width: 100%;
   color: ${textColor};

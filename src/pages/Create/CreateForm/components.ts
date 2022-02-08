@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const InlineControl = styled.div`
   display: flex;
@@ -40,4 +41,9 @@ export const ButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin: 50px 0;
+`;
+
+export const SubmitLoader = styled(CircularProgress)`
+  margin-left: 20px;
+  color: black;
 `;

@@ -1,5 +1,5 @@
-import React from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import svgToMiniDataURI from 'mini-svg-data-uri';
 
 import {
@@ -14,13 +14,18 @@ import { getColors } from '../../../colors';
 
 interface UseGenerateSVG {
   generate: () => void;
+  generating: boolean;
 }
 
 export default function useGenerateSVG(birthDate: number, svgRef: React.MutableRefObject<SVGSVGElement | undefined>): UseGenerateSVG {
-  const [shapesState, setShapesState] = useRecoilState(shapes);
-  const [imageUriState, setImageUriState] = useRecoilState(imageUri);
+  const setShapesState = useSetRecoilState(shapes);
+  const setImageUriState = useSetRecoilState(imageUri);
+  const [generating, setGenerating] = useState(false);
 
   const generate = (): void => {
+    setImageUriState(undefined);
+    setGenerating(true);
+
     const radian = getRadian(6, 10);
     const x = Math.round(Math.random() * (canvasWidth - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
     const y = Math.round(Math.random() * (canvasHeight - (startingPointEdgeBuffer * 2))) + startingPointEdgeBuffer;
@@ -38,6 +43,7 @@ export default function useGenerateSVG(birthDate: number, svgRef: React.MutableR
 
         const image = svgRef.current?.outerHTML as string;
         setImageUriState(svgToMiniDataURI(image));
+        setGenerating(false);
 
         return;
       }
@@ -71,5 +77,5 @@ export default function useGenerateSVG(birthDate: number, svgRef: React.MutableR
     }, drawInterval);
   };
 
-  return { generate };
+  return { generate, generating };
 }

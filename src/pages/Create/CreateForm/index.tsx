@@ -41,7 +41,7 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
 
   const { gasEstimate, minting, mint } = useMintNFT();
   // TODO: fix this cast
-  const { generate } = useGenerateSVG(birthDateState as number, svgRef);
+  const { generate, generating } = useGenerateSVG(birthDateState as number, svgRef);
 
   useEffect(() => {
     if (gasEstimate.estimate) {
@@ -104,8 +104,8 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
     <form onSubmit={handleSubmit}>
       <Heading variant="h4">Mint your NFT</Heading>
       <BirthDate />
-      <GenerateButton generate={generate} />
-      <MintingFields handleChange={handleChange} formValues={formValues} />
+      <GenerateButton generate={generate} generating={generating} />
+      <MintingFields handleChange={handleChange} formValues={formValues} gasEstimate={gasEstimate} minting={minting} />
     </form>
   );
 };

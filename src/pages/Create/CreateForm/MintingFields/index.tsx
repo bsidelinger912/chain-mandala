@@ -11,9 +11,10 @@ import FormLabel from '@mui/material/FormLabel';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
 
-import { ButtonWrapper, InlineControl } from '../components';
+import { ButtonWrapper, InlineControl, SubmitLoader } from '../components';
 import imageUri from '../../atoms/imageUri';
 import { useAuth } from '../../../../auth/AuthProvider';
 import { UseMintNFT } from '../../hooks/useMintNFT';
@@ -46,11 +47,6 @@ const LoadingWithText = styled.div`
   }
 `;
 
-const SubmitLoader = styled(CircularProgress)`
-  margin-left: 20px;
-  color: black;
-`;
-
 const MintingFields: React.FC<Props> = ({
   handleChange, gasEstimate, minting, formValues,
 }) => {
@@ -79,6 +75,7 @@ const MintingFields: React.FC<Props> = ({
       </LoadingWithText>
     );
   }
+
   return (
     <>
       <FullWidthControl>
@@ -100,8 +97,9 @@ const MintingFields: React.FC<Props> = ({
           <TextField onChange={handleChange} id="maxGas" name="maxGas" variant="outlined" value={formValues.maxGas} />
         </InlineControl>
       </FullWidthControl>
+      {minting?.error && <Alert severity="error">{minting.error}</Alert>}
       <SubmitButtonWrapper>
-        <Button type="submit" variant="contained" size="large">
+        <Button disabled={minting?.loading} type="submit" variant="contained" size="large">
           Mint NFT
           {minting?.loading && <SubmitLoader size={20} />}
         </Button>

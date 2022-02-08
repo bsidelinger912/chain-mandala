@@ -1,8 +1,9 @@
-import { Pallette, Shape } from './types';
+import { Shape } from './types';
 
 export const canvasWidth = 500;
 export const canvasHeight = 500;
-export const startingPointEdgeBuffer = 100; // if you start the algo at the edge or middle it can get too wonky, this is used to keep the start away from the edges or middle
+// if you start the algo at the edge or middle it can get too wonky, this is used to keep the start away from the edges or middle
+export const startingPointEdgeBuffer = 100;
 export const symmetry = canvasWidth;
 export const xCenter = symmetry / 2;
 export const lineMaxDistance = 200;
