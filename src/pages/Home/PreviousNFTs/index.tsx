@@ -35,7 +35,11 @@ const PreviousNFTs: React.FC = () => {
       <ListWrapper>
         {!data ? <CenteredLoader /> : (
           <>
-            {data.map((tokenInfo) => <Item key={tokenInfo.tokenId}><NFTDisplay metaData={tokenInfo.metaData} tokenId={tokenInfo.tokenId} /></Item>)}
+            {data.map((tokenInfo) => (
+              <Item key={tokenInfo.tokenId}>
+                <NFTDisplay metaData={tokenInfo.metaData} tokenId={tokenInfo.tokenId} owner={tokenInfo.owner} />
+              </Item>
+            ))}
           </>
         )}
       </ListWrapper>

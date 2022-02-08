@@ -3,19 +3,27 @@
  * @description
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
-import { NFTMetaData } from '../../../types';
+import { PrevNFTWithTokenId } from '../../../chainData/Provider';
+import MandalaModal from '../../../components/MandalaModal';
 
-export interface Props {
-  metaData: NFTMetaData;
-  tokenId: number;
-}
+export type Props = PrevNFTWithTokenId;
 
-const NFTDisplay: React.FC<Props> = ({ metaData, tokenId }) => (
-  <div>
-    <img alt={`OnChainNFT # ${tokenId}`} src={metaData.image} />
-  </div>
-);
+const Wrapper = styled.div`
+  cursor: pointer;
+`;
+
+const NFTDisplay: React.FC<Props> = ({ metaData, tokenId, owner }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <Wrapper onClick={() => setModalOpen(true)}>
+      <img alt={`OnChainNFT # ${tokenId}`} src={metaData.image} />
+      {modalOpen && <MandalaModal metaData={metaData} tokenId={tokenId} owner={owner} onClose={() => setModalOpen(false)} />}
+    </Wrapper>
+  );
+};
 
 export default NFTDisplay;

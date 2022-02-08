@@ -12,6 +12,7 @@ import { nftContract } from '../web3';
 export interface PrevNFTWithTokenId {
   metaData: NFTMetaData;
   tokenId: number;
+  owner: string;
 }
 
 export interface ChainDataContext {
@@ -19,9 +20,21 @@ export interface ChainDataContext {
   getPreviousNFTs: (numberOfNFTs: number, offset?: number) => Promise<PrevNFTWithTokenId[]>;
 }
 
+interface TokenQueries {
+  tokenUri: string;
+  owner: string;
+  tokenId: number;
+}
+
 const ctx = createContext<ChainDataContext>({} as ChainDataContext);
 
 export const useChainData = (): ChainDataContext => useContext(ctx);
+
+const getTokenUriAndOwner = async (tokenId: number): Promise<TokenQueries> => {
+  const [tokenUri, owner] = await Promise.all([nftContract.methods.tokenURI(tokenId).call(), nftContract.methods.ownerOf(tokenId).call()]);
+
+  return { tokenId, tokenUri, owner };
+};
 
 const ChainDataProvider: React.FC = ({ children }) => {
   const [latestTokenId, setLatestTokenId] = useState<number>();
@@ -46,17 +59,18 @@ const ChainDataProvider: React.FC = ({ children }) => {
     const endNumber = Math.max(1, startNumber - numberOfNFTs);
 
     for (let i = startNumber; i >= endNumber; i--) {
-      promises.push(nftContract.methods.tokenURI(i).call());
+      promises.push(getTokenUriAndOwner(i));
     }
 
-    const results: string[] = await Promise.all(promises);
+    const results: TokenQueries[] = await Promise.all(promises);
 
     return results.map((result, index) => {
-      const encoded = result.split(';base64,')[1];
+      const encoded = result.tokenUri.split(';base64,')[1];
       const json = atob(encoded);
       return {
         metaData: JSON.parse(json),
         tokenId: index + 1,
+        owner: result.owner,
       } as PrevNFTWithTokenId;
     });
   }, [latestTokenId]);

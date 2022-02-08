@@ -18,6 +18,7 @@ export default function usePreviousNFTs(numberOfNFTs: number, offset?: number): 
     setLoading(true);
     try {
       const prev = await getPreviousNFTs(numberOfNFTs, offset);
+
       setData(prev);
       setLoading(false);
     } catch (e: any) {
