@@ -5,47 +5,51 @@
 
 import React from 'react';
 import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import styled from 'styled-components';
 
 import { PrevNFTWithTokenId } from '../../chainData/Provider';
-import ScanLink from '../ScanLink';
+import Attribute from './Attribute';
 
 export type Props = PrevNFTWithTokenId & {
   onClose: () => void;
 }
 
+const imageHeight = '90vh';
+const infoWidth = '270px';
+
 const ContentWrapper = styled.div`
+  position: relative;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  width: 50%;
-  margin: 20px auto 0;
-  background-color: white;
-  border: 1px solid black;
+  flex-direction: row;
+  height: ${imageHeight};
+  width: calc(${imageHeight} + ${infoWidth});
+  margin: 5vh auto 0;
+  background-color: #282c34;
+  color: white;
+  border: 1px solid white;
   border-radius: 5px;
   outline: none;
 `;
 
+const ImageWrapper = styled.div`
+  height: ${imageHeight};
+  width: ${imageHeight};
+  border-right: 1px solid white;
+`;
+
 const InfoWrapper = styled.div`
+  box-sizing: border-box;
   padding: 15px;
+  width: ${infoWidth};
 `;
 
-const LinkWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const AttributesList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const Attribute = styled.span`
-  margin: 10px;
-  border: 1px solid white;
-  border-radius: 5px;
-  padding: 10px;
+const CloseButtonWrapper = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 10px;
 `;
 
 const MandalaModal: React.FC<Props> = ({
@@ -53,22 +57,20 @@ const MandalaModal: React.FC<Props> = ({
 }) => (
   <Modal open onClose={onClose} onBackdropClick={onClose}>
     <ContentWrapper>
-      <div>
+      <CloseButtonWrapper>
+        <IconButton onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      </CloseButtonWrapper>
+      <ImageWrapper>
         <img alt={`OnChainNFT # ${tokenId}`} src={metaData.image} />
-      </div>
+      </ImageWrapper>
       <InfoWrapper>
-        <LinkWrapper>
-          <Typography>Owner:</Typography>
-          <ScanLink hash={owner} />
-        </LinkWrapper>
-        <AttributesList>
-          {metaData.attributes.map((attribute) => (
-            <Attribute>
-              <Typography>{`${attribute.trait_type}: `}</Typography>
-              <Chip label={attribute.value as string} />
-            </Attribute>
-          ))}
-        </AttributesList>
+        <Attribute name="Token ID" value={tokenId.toString()} />
+        <Attribute name="Owner" value={`${owner.substr(0, 20)}...`} />
+        {metaData.attributes.map((attribute) => (
+          <Attribute name={attribute.trait_type} key={attribute.trait_type} value={attribute.value} />
+        ))}
       </InfoWrapper>
     </ContentWrapper>
   </Modal>
