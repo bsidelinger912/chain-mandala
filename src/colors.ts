@@ -1,63 +1,59 @@
 /* eslint-disable import/prefer-default-export */
-const ColorScheme = require('color-scheme');
-
 const colorNumbers = [
   {
-    hue: 30,
+    planet: 'Sun',
     dates: [1, 10, 19, 28],
-    variation: 'hard',
+    colors: ['#3A3042', '#DB9D47', '#FF784F', '#FFE19C', '#EDFFD9'],
   },
   {
-    hue: 70,
+    planet: 'Moon',
     dates: [2, 11, 20, 29],
-    variation: 'pale',
+    colors: ['#46B1C9', '#84C0C6', '#9FB7B9', '#BCC1BA', '#F2E2D2'],
   },
   {
-    hue: 100,
-    dates: [1, 12, 21, 30],
-    variation: 'default',
+    planet: 'Jupiter',
+    dates: [3, 12, 21, 30],
+    colors: ['#9AD2CB', '#D7EBBA', '#FEFFBE', '#EBD494', '#472836'],
   },
   {
-    hue: 260,
+    planet: 'Rahu',
     dates: [4, 13, 22, 31],
-    variation: 'soft',
+    colors: ['#84DCC6', '#D6EDFF', '#ACD7EC', '#8B95C9', '#478978'],
   },
   {
-    hue: 135,
-    dates: [4, 14, 23],
-    variation: 'hard',
+    planet: 'Mercury',
+    dates: [5, 14, 23],
+    colors: ['#BBBE64', '#EAF0CE', '#C0C5C1', '#7D8491', '#443850'],
   },
   {
-    hue: 210,
+    planet: 'Venus',
     dates: [6, 15, 24],
-    variation: 'light',
+    colors: ['#FFA630', '#D7E8BA', '#4DA1A9', '#2E5077', '#611C35'],
   },
   {
-    hue: 150,
-    dates: [6, 16, 25],
-    variation: 'pastel',
+    planet: 'Ketu',
+    dates: [7, 16, 25],
+    colors: ['#FCD0A1', '#B1B695', '#53917E', '#63535B', '#6D1A36'],
   },
   {
-    hue: 240,
+    planet: 'Saturn',
     dates: [8, 17, 26],
-    variation: 'hard',
+    colors: ['#141B41', '#306BAC', '#6F9CEB', '#98B9F2', '#918EF4'],
   },
   {
-    hue: 10,
+    planet: 'Mars',
     dates: [9, 18, 27],
-    variation: 'hard',
+    colors: ['#5BC0EB', '#FDE74C', '#9BC53D', '#E55934', '#FA7921'],
   },
 ];
 
 export function getColors(birthDate: number): string[] {
-  let colorIndex = colorNumbers.findIndex((colorNumber) => colorNumber.dates.find((date) => date === birthDate));
+  const colorIndex = colorNumbers.findIndex((colorNumber) => colorNumber.dates.find((date) => date === birthDate));
+
   if (colorIndex < 0) {
-    colorIndex = Math.round(Math.random() * colorNumbers.length);
+    console.error('failed to get colors for this data');
+    return colorNumbers[0].colors;
   }
 
-  const colorRange = colorNumbers[colorIndex];
-
-  const scheme = new ColorScheme();
-  scheme.from_hue(colorRange.hue).scheme('contrast').variation(colorRange.variation);
-  return scheme.colors().map((color: string) => `#${color}`);
+  return colorNumbers[colorIndex].colors;
 }

@@ -57,6 +57,8 @@ export const getLine = (x: number, y: number, radian: number, colors: string[]):
   const color = colors[Math.round(Math.random() * colors.length)];
   const width = Math.round(Math.random() * 5);
 
+  console.log(color);
+
   return startPoints.map((_, i) => ({
     x1: startPoints[i][0],
     y1: startPoints[i][1],
