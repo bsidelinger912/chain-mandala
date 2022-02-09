@@ -3,17 +3,23 @@
  * @description
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
 
 import usePreviousNFTs from '../../../chainData/usePreviousNFTs';
 import CenteredLoader from '../../../components/CenteredLoader';
+import MandalaModal from '../../../components/MandalaModal';
 
 const Wrapper = styled.div`
   border: 1px solid white;
   padding: 20px;
   border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #ccc;
+  }
 `;
 
 const Image = styled.img`
@@ -22,6 +28,7 @@ const Image = styled.img`
 
 const LatestNFT: React.FC = () => {
   const { data } = usePreviousNFTs(1);
+  const [modalOpen, setModalOpen] = useState(false);
 
   if (!data) {
     return <CenteredLoader />;
@@ -31,10 +38,13 @@ const LatestNFT: React.FC = () => {
     return <Typography>Be the first to mint!</Typography>;
   }
 
+  const { metaData, tokenId, owner } = data[0];
+
   return (
     <Wrapper>
       <Typography variant="h4">Latest Mandala</Typography>
-      <Image alt={`OnChainNFT # ${data[0].tokenId}`} src={data[0].metaData.image} />
+      <Image onClick={() => setModalOpen(true)} alt={`OnChainNFT # ${data[0].tokenId}`} src={data[0].metaData.image} />
+      {modalOpen && <MandalaModal metaData={metaData} tokenId={tokenId} owner={owner} onClose={() => setModalOpen(false)} />}
     </Wrapper>
   );
 };

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
+
 import { useAuth } from '../../../auth/AuthProvider';
 import { NFTMetaData } from '../../../types';
 import { createMetaData } from '../../../util';
 import { contractAddress, nftContract, web3 } from '../../../web3';
 import imageUri from '../atoms/imageUri';
-import shapes, { emptyShapes } from '../atoms/shapes';
+import shapes, { emptyShapes, Shapes } from '../atoms/shapes';
 
 export interface UseMintNFT {
   gasEstimate: {
@@ -20,10 +21,18 @@ export interface UseMintNFT {
   mint: (maxGas: string) => Promise<void>;
 }
 
-const getEncodedMetaData = (image: string): string | undefined => {
+const getEncodedMetaData = (image: string, currentShapes: Shapes): string | undefined => {
+  const colors = new Set<string>();
+  currentShapes.lines.forEach((line) => colors.add(line.color));
+  currentShapes.curves.forEach((curve) => colors.add(curve.color));
+  currentShapes.perpendiculars.forEach((perp) => colors.add(perp.color));
+
   const metaData: NFTMetaData = {
     image,
-    attributes: [], // TODO: better attributes
+    attributes: Array.from(colors).map((color, index) => ({
+      trait_type: `Color #${index + 1}`,
+      value: color,
+    })),
   };
 
   return createMetaData(metaData);
@@ -31,7 +40,7 @@ const getEncodedMetaData = (image: string): string | undefined => {
 
 export default function useMintNFT(): UseMintNFT {
   const [imageUriState, setImageUriState] = useRecoilState(imageUri);
-  const setShapesState = useSetRecoilState(shapes);
+  const [shapesState, setShapesState] = useRecoilState(shapes);
 
   const [estimateLoading, setEstimateLoading] = useState(false);
   const [estimate, setEstimate] = useState<number>();
@@ -48,7 +57,7 @@ export default function useMintNFT(): UseMintNFT {
     setEstimateLoading(true);
 
     try {
-      const encodedMetaData = getEncodedMetaData(imageUriState as string);
+      const encodedMetaData = getEncodedMetaData(imageUriState as string, shapesState);
 
       const tx = {
         from: account as string,
@@ -65,7 +74,7 @@ export default function useMintNFT(): UseMintNFT {
     } finally {
       setEstimateLoading(false);
     }
-  }, [account, imageUriState]);
+  }, [account, imageUriState, shapesState]);
 
   const mint = async (maxGas: string): Promise<void> => {
     if (!imageUriState) {
@@ -77,7 +86,7 @@ export default function useMintNFT(): UseMintNFT {
     setMintError(undefined);
 
     try {
-      const encodedMetaData = getEncodedMetaData(imageUriState as string);
+      const encodedMetaData = getEncodedMetaData(imageUriState as string, shapesState);
 
       const tx = {
         from: account,
