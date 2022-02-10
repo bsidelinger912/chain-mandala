@@ -1,6 +1,6 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 export const InlineControl = styled.div`
   display: flex;
@@ -46,4 +46,8 @@ export const ButtonWrapper = styled.div`
 export const SubmitLoader = styled(CircularProgress)`
   margin-left: 20px;
   color: black;
+`;
+
+export const Heading = styled(Typography)`
+  margin-bottom: 30px;
 `;

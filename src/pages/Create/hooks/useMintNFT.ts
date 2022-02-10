@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { TransactionReceipt } from 'web3-core';
 
 import { useAuth } from '../../../auth/AuthProvider';
 import { NFTMetaData } from '../../../types';
@@ -8,17 +10,20 @@ import { contractAddress, nftContract, web3 } from '../../../web3';
 import imageUri from '../atoms/imageUri';
 import shapes, { emptyShapes, Shapes } from '../atoms/shapes';
 
+export type MintStatus = 'idle' | 'loading' | 'confirming' | 'success' | 'error';
+
 export interface UseMintNFT {
   gasEstimate: {
     loading: boolean;
     estimate?: number;
   },
   minting: {
-    loading: boolean;
+    status: MintStatus;
     error?: string;
     transactionHash?: string;
   },
   mint: (maxGas: string) => Promise<void>;
+  clearMintState: () => void;
 }
 
 const getEncodedMetaData = (image: string, currentShapes: Shapes): string | undefined => {
@@ -45,11 +50,17 @@ export default function useMintNFT(): UseMintNFT {
   const [estimateLoading, setEstimateLoading] = useState(false);
   const [estimate, setEstimate] = useState<number>();
 
-  const [mintLoading, setMintLoading] = useState(false);
+  const [mintStatus, setMintStatus] = useState<MintStatus>('idle');
   const [mintError, setMintError] = useState<string>();
   const [transactionHash, setTransactionHash] = useState<string>();
 
   const { account } = useAuth();
+
+  const clearMintState = (): void => {
+    setMintStatus('idle');
+    setMintError(undefined);
+    setTransactionHash(undefined);
+  };
 
   const estimateGas = useCallback(async (): Promise<void> => {
     if (!imageUriState && !account) return;
@@ -66,9 +77,8 @@ export default function useMintNFT(): UseMintNFT {
       };
 
       const gasEstimate = await web3.eth.estimateGas(tx);
-      const divided = Math.round(gasEstimate / 10);
 
-      setEstimate(divided);
+      setEstimate(gasEstimate);
     } catch (e) {
       console.error('error minting NFT:', e);
     } finally {
@@ -82,32 +92,41 @@ export default function useMintNFT(): UseMintNFT {
       return;
     }
 
-    setMintLoading(true);
+    setMintStatus('loading');
     setMintError(undefined);
 
     try {
       const encodedMetaData = getEncodedMetaData(imageUriState as string, shapesState);
 
       const tx = {
-        from: account,
+        from: account as string,
         to: contractAddress,
         gas: maxGas,
         data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
       };
 
-      // TODO: use web3??
-      const txHash = await (window as any).ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [tx],
-      });
-
-      setTransactionHash(txHash);
-      setImageUriState(undefined);
-      setShapesState(emptyShapes);
+      web3.eth.sendTransaction(tx)
+        .on('transactionHash', (hash) => {
+          setTransactionHash(hash);
+          setMintStatus('confirming');
+        })
+        .on('receipt', (receipt: TransactionReceipt) => {
+          if (receipt.status) {
+            setMintStatus('success');
+            setImageUriState(undefined);
+            setShapesState(emptyShapes);
+          } else {
+            setMintError('Error minting token');
+            setMintStatus('error');
+          }
+        })
+        .on('error', (err) => {
+          setMintError(err.message);
+          setMintStatus('error');
+        }); // If a out of gas error, the second parameter is the receipt.
     } catch (err: any) {
       setMintError(err.message);
-    } finally {
-      setMintLoading(false);
+      setMintStatus('error');
     }
   };
 
@@ -124,10 +143,11 @@ export default function useMintNFT(): UseMintNFT {
       estimate,
     },
     minting: {
-      loading: mintLoading,
+      status: mintStatus,
       error: mintError,
       transactionHash,
     },
     mint,
+    clearMintState,
   };
 }

@@ -7,9 +7,6 @@ import React, {
   ChangeEvent, useCallback, useEffect, useState,
 } from 'react';
 import { useRecoilState } from 'recoil';
-import Typography from '@mui/material/Typography';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import styled from 'styled-components';
 
 import useGenerateSVG from '../hooks/useGenerateSVG';
 import useMintNFT from '../hooks/useMintNFT';
@@ -18,19 +15,12 @@ import BirthDate from './BirthDate';
 import GenerateButton from './GenerateButton';
 import MintingFields from './MintingFields';
 import { FormValues } from './types';
+import Transaction from './Transaction';
+import { Heading } from './components';
 
 export interface Props {
   svgRef: React.MutableRefObject<SVGSVGElement | undefined>;
 }
-
-const Heading = styled(Typography)`
-  margin-bottom: 30px;
-`;
-
-const TransactionText = styled.div`
-  display: flex;
-  align-items: center;
-`;
 
 const CreateForm: React.FC<Props> = ({ svgRef }) => {
   const [birthDateState] = useRecoilState(birthDate);
@@ -39,7 +29,9 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
     maxGas: '',
   });
 
-  const { gasEstimate, minting, mint } = useMintNFT();
+  const {
+    gasEstimate, minting, mint, clearMintState,
+  } = useMintNFT();
   // TODO: fix this cast
   const { generate, generating } = useGenerateSVG(birthDateState as number, svgRef);
 
@@ -83,21 +75,7 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
   }, [formValues, mint]);
 
   if (minting.transactionHash) {
-    return (
-      <div>
-        <Heading variant="h4">Success</Heading>
-
-        <TransactionText>
-          <Typography>
-            Transaction hash: &nbsp;
-            <a href={`https://mumbai.polygonscan.com/tx/${minting.transactionHash}`} target="_blank" rel="noreferrer">
-              {`${minting.transactionHash.substr(0, 20)}...`}
-              <OpenInNewIcon />
-            </a>
-          </Typography>
-        </TransactionText>
-      </div>
-    );
+    return <Transaction minting={minting as any} clearMintState={clearMintState} />;
   }
 
   return (

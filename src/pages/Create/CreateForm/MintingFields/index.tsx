@@ -99,9 +99,9 @@ const MintingFields: React.FC<Props> = ({
       </FullWidthControl>
       {minting?.error && <Alert severity="error">{minting.error}</Alert>}
       <SubmitButtonWrapper>
-        <Button disabled={minting?.loading} type="submit" variant="contained" size="large">
+        <Button disabled={minting?.status === 'loading'} type="submit" variant="contained" size="large">
           Mint NFT
-          {minting?.loading && <SubmitLoader size={20} />}
+          {minting?.status === 'loading' && <SubmitLoader size={20} />}
         </Button>
       </SubmitButtonWrapper>
     </>
