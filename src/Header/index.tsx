@@ -6,10 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-
-import { useAuth } from '../auth/AuthProvider';
 
 const Main = styled.header`
   width: 100%;
@@ -25,25 +22,13 @@ const Title = styled(Typography)`
   text-decoration: none;
 ` as typeof Typography;
 
-const RightColumn = styled.div``;
-
-const Header: React.FC = () => {
-  const { connect, account } = useAuth();
-
-  return (
-    <Main>
-      <div>
-        <Title component={Link} to="/" variant="h2">On-chain Mandala</Title>
-        <Typography variant="h5">Digital art with permanence</Typography>
-      </div>
-
-      <RightColumn className="App-header-right">
-        {account
-          ? <Typography>Connected</Typography>
-          : <Button variant="contained" onClick={connect}>Connect wallet</Button>}
-      </RightColumn>
-    </Main>
-  );
-};
+const Header: React.FC = () => (
+  <Main>
+    <div>
+      <Title component={Link} to="/" variant="h2">On-chain Mandala</Title>
+      <Typography variant="h5">Digital art with permanence</Typography>
+    </div>
+  </Main>
+);
 
 export default Header;

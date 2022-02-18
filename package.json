@@ -84,7 +84,8 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "copy-contract-json": "cp ./artifacts/contracts/OnChainNFT.sol/OnChainNFT.json ./src/",
-    "deploy-contract:test": "npx hardhat run scripts/deploy.js --network polygon_mumbai && copy-contract-json"
+    "deploy-contract:test": "npx hardhat run scripts/deploy.js --network polygon_mumbai && yarn copy-contract-json",
+    "deploy-coin:test": "npx hardhat run scripts/deployCoin.js --network polygon_mumbai"
   },
   "browserslist": {
     "production": [

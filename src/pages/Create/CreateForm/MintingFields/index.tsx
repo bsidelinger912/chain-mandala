@@ -3,27 +3,27 @@
  * @description
  */
 
-import React, { ChangeEvent } from 'react';
+import React, {
+  ChangeEvent, useCallback, useEffect, useState,
+} from 'react';
 import { useRecoilState } from 'recoil';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
 
-import { ButtonWrapper, InlineControl, SubmitLoader } from '../components';
+import { InlineControl, SubmitLoader } from '../components';
 import imageUri from '../../atoms/imageUri';
 import { useAuth } from '../../../../auth/AuthProvider';
 import { UseMintNFT } from '../../hooks/useMintNFT';
 import { FormValues } from '../types';
 import birthDate from '../../atoms/birthDate';
+import { tokenContract } from '../../../../web3';
 
 export interface Props {
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  gasEstimate?: UseMintNFT['gasEstimate'];
   minting?: UseMintNFT['minting'];
   formValues: Partial<FormValues>;
 }
@@ -37,60 +37,33 @@ const SubmitButtonWrapper = styled.div`
   justify-content: flex-end;
 `;
 
-const LoadingWithText = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  >p {
-    min-width: 30%;
-  }
-`;
-
 const MintingFields: React.FC<Props> = ({
-  handleChange, gasEstimate, minting, formValues,
+  handleChange, minting, formValues,
 }) => {
   const [imageUriState] = useRecoilState(imageUri);
   const [birthDateState] = useRecoilState(birthDate);
 
-  const { account, connect } = useAuth();
+  const [tokenBalance, setTokenBalance] = useState<number>();
+
+  const { account } = useAuth();
+
+  const checkTokenBalance = useCallback(async () => {
+    const balance = await tokenContract.methods.balanceOf(account).call();
+    setTokenBalance(balance / 10 ** 18);
+  }, [account]);
+
+  useEffect(() => {
+    if (account && typeof tokenBalance === 'undefined') {
+      checkTokenBalance();
+    }
+  }, [account, checkTokenBalance, tokenBalance]);
 
   if (!imageUriState || !birthDateState) {
     return null;
   }
 
-  if (!account) {
-    return (
-      <ButtonWrapper>
-        <Button onClick={connect} size="large" variant="contained">
-          Connect Wallet
-        </Button>
-      </ButtonWrapper>
-    );
-  } if (gasEstimate?.loading) {
-    return (
-      <LoadingWithText>
-        <Typography>Estimating gas</Typography>
-        <CircularProgress />
-      </LoadingWithText>
-    );
-  }
-
   return (
     <>
-      <FullWidthControl>
-        <InlineControl>
-          <FormLabel>Gas Estimate</FormLabel>
-          <TextField
-            InputProps={{
-              readOnly: true,
-            }}
-            id="gasEstimate"
-            variant="outlined"
-            value={gasEstimate?.estimate}
-          />
-        </InlineControl>
-      </FullWidthControl>
       <FullWidthControl>
         <InlineControl>
           <FormLabel htmlFor="maxGas">Max Gas</FormLabel>
