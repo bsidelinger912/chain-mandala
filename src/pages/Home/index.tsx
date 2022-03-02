@@ -46,7 +46,7 @@ const Home: React.FC = () => (
         </p>
 
         <Button size="large" variant="contained" component={Link} to="/create">
-          I have a MDLA, lets mint!
+          I have some MDLA token, lets mint!
         </Button>
       </BlurbHolder>
     </TopRow>
