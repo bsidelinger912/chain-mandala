@@ -13,11 +13,26 @@ contract OnChainNFT is Initializable, ERC721URIStorageUpgradeable, OwnableUpgrad
     Counters.Counter private _tokenIds;
 
     IERC20 private mandalaCoin;
+    string private startString;
 
     function initialize() public initializer {
         __ERC721_init("OnChainNFT", "NFT");
         __Ownable_init();
         mandalaCoin = IERC20(0x87F789c95A137F915DA83aCd32bBb3724631F997);
+        startString = "data:application/json;base64,";
+    }
+
+    function substring(string memory str, uint startIndex, uint endIndex) 
+        private 
+        pure
+        returns (string memory) 
+    {
+        bytes memory strBytes = bytes(str);
+        bytes memory result = new bytes(endIndex-startIndex);
+        for(uint i = startIndex; i < endIndex; i++) {
+            result[i-startIndex] = strBytes[i];
+        }
+        return string(result);
     }
 
     function getLatestTokenId()
@@ -32,9 +47,12 @@ contract OnChainNFT is Initializable, ERC721URIStorageUpgradeable, OwnableUpgrad
         public
         returns (uint256)
     {
-        require(mandalaCoin.balanceOf(msg.sender) >= 1 ether);
+        require(mandalaCoin.balanceOf(msg.sender) >= 1 ether, "You must have MDLA to mint");
 
-        // mandalaCoin.transferFrom(msg.sender, address(0), 1);
+        string memory imageStartString = substring(tokenURI, 0, 29);
+
+        require(keccak256(abi.encodePacked(imageStartString)) == keccak256(abi.encodePacked(startString)), "You must mint an on-chain Mandala");
+
         mandalaCoin.transferFrom(msg.sender, address(this), 1 * (10**18));
 
         _tokenIds.increment();

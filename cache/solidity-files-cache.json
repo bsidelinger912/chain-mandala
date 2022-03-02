@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/bsidelinger/git/on-chain-nft/contracts/OnChainNFT.sol": {
-      "lastModificationDate": 1645424009275,
-      "contentHash": "34773b0f5999289dda5e675ee7a3e13b",
+      "lastModificationDate": 1646203836270,
+      "contentHash": "a69e6653c5f4624224c57d3bac82e157",
       "sourceName": "contracts/OnChainNFT.sol",
       "solcConfig": {
         "version": "0.8.3",
@@ -927,8 +927,8 @@
       ]
     },
     "/Users/bsidelinger/git/on-chain-nft/contracts/MandalaCoin.sol": {
-      "lastModificationDate": 1645241012007,
-      "contentHash": "353e5de59ea3806174b3f27912c7c839",
+      "lastModificationDate": 1646118407439,
+      "contentHash": "9caa76c3d9967cff321285e42a8f0d28",
       "sourceName": "contracts/MandalaCoin.sol",
       "solcConfig": {
         "version": "0.8.3",
@@ -1072,6 +1072,41 @@
       ],
       "artifacts": [
         "IERC20Metadata"
+      ]
+    },
+    "/Users/bsidelinger/git/on-chain-nft/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1642830029688,
+      "contentHash": "cc4777addd464ea56fa35b1c45df0591",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     }
   }
