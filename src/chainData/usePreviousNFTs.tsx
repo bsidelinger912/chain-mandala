@@ -5,6 +5,7 @@ interface Value {
   loading: boolean;
   data?: PrevNFTWithTokenId[];
   error?: string;
+  reload: () => void;
 }
 
 export default function usePreviousNFTs(numberOfNFTs: number, offset?: number): Value {
@@ -30,5 +31,7 @@ export default function usePreviousNFTs(numberOfNFTs: number, offset?: number): 
     load();
   }, [load]);
 
-  return { loading, error, data };
+  return {
+    loading, error, data, reload: load,
+  };
 }

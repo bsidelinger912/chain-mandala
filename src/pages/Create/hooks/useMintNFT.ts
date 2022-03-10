@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { TransactionReceipt } from 'web3-core';
@@ -7,7 +7,7 @@ import { useAuth } from '../../../auth/AuthProvider';
 import { NFTMetaData } from '../../../types';
 import { createMetaData } from '../../../util';
 import {
-  contractAddress, nftContract, tokenContract, web3,
+  contractAddress, nftContract, web3,
 } from '../../../web3';
 import imageUri from '../atoms/imageUri';
 import shapes, { emptyShapes, Shapes } from '../atoms/shapes';
@@ -57,10 +57,6 @@ export default function useMintNFT(): UseMintNFT {
     setTransactionHash(undefined);
   };
 
-  const approvePayment = useCallback(async (): Promise<void> => {
-    await tokenContract.methods.approve(contractAddress, '1000000000000000000').send({ from: account });
-  }, [account]);
-
   const mint = async (maxGas: string): Promise<void> => {
     if (!imageUriState) {
       setMintError('Image not ready for minting');
@@ -71,15 +67,16 @@ export default function useMintNFT(): UseMintNFT {
     setMintError(undefined);
 
     try {
-      await approvePayment();
-
       const encodedMetaData = getEncodedMetaData(imageUriState as string, shapesState);
+
+      const maxPriorityFee = await (web3.eth as any).getMaxPriorityFeePerGas();
 
       const tx = {
         from: account as string,
         to: contractAddress,
         gas: maxGas,
         data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
+        maxPriorityFeePerGas: maxPriorityFee,
       };
 
       web3.eth.sendTransaction(tx)

@@ -18,7 +18,7 @@ contract OnChainNFT is Initializable, ERC721URIStorageUpgradeable, OwnableUpgrad
     function initialize() public initializer {
         __ERC721_init("OnChainNFT", "NFT");
         __Ownable_init();
-        mandalaCoin = IERC20(0x87F789c95A137F915DA83aCd32bBb3724631F997);
+        mandalaCoin = IERC20(0xfCf181ddb07d3a0515F2325d455Aa234E670B248);
         startString = "data:application/json;base64,";
     }
 

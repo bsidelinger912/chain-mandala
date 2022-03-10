@@ -51,7 +51,7 @@ const ChainDataProvider: React.FC = ({ children }) => {
   }, []);
 
   const getPreviousNFTs = useCallback(async (numberOfNFTs: number, offset?: number) => {
-    const latestTokenNumber = !latestTokenId ? await getTokenCount() : latestTokenId;
+    const latestTokenNumber = await getTokenCount();
 
     const promises = [];
 

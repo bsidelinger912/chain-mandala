@@ -21,6 +21,8 @@ import { UseMintNFT } from '../../hooks/useMintNFT';
 import { FormValues } from '../types';
 import birthDate from '../../atoms/birthDate';
 import { tokenContract } from '../../../../web3';
+import ApproveButton from './ApproveButton';
+import useApproveCoin from '../../hooks/useApproveCoin';
 
 export interface Props {
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -35,6 +37,10 @@ const FullWidthControl = styled(FormControl)`
 const SubmitButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  button {
+    margin-left: 30px;
+  }
 `;
 
 const MintingFields: React.FC<Props> = ({
@@ -46,6 +52,7 @@ const MintingFields: React.FC<Props> = ({
   const [tokenBalance, setTokenBalance] = useState<number>();
 
   const { account } = useAuth();
+  const { approving } = useApproveCoin();
 
   const checkTokenBalance = useCallback(async () => {
     const balance = await tokenContract.methods.balanceOf(account).call();
@@ -72,6 +79,7 @@ const MintingFields: React.FC<Props> = ({
       </FullWidthControl>
       {minting?.error && <Alert severity="error">{minting.error}</Alert>}
       <SubmitButtonWrapper>
+        <ApproveButton />
         <Button disabled={minting?.status === 'loading'} type="submit" variant="contained" size="large">
           Mint NFT
           {minting?.status === 'loading' && <SubmitLoader size={20} />}

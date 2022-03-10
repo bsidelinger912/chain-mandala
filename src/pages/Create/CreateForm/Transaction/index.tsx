@@ -43,7 +43,7 @@ const RetryButton = styled(Button)`
 
 const Transaction: React.FC<Props> = ({ minting, clearMintState }) => {
   const scanLink = (
-    <a href={`https://mumbai.polygonscan.com/tx/${minting.transactionHash}`} target="_blank" rel="noreferrer">
+    <a href={`${process.env.BLOCK_EXPLORER_URL}${minting.transactionHash}`} target="_blank" rel="noreferrer">
       {`${minting.transactionHash.substr(0, 20)}...`}
       <OpenInNewIcon />
     </a>

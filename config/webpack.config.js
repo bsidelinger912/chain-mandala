@@ -575,7 +575,7 @@ module.exports = function (webpackEnv) {
         Buffer: ['buffer', 'Buffer'],
       }),
       new Dotenv({
-        path: `.env.${process.env.NODE_ENV}`
+        path: `.env`
       }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
