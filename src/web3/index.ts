@@ -1,3 +1,4 @@
+import { AlchemyEth, AlchemyWeb3 } from '@alch/alchemy-web3';
 import { WindowWithWeb3 } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, import/extensions
@@ -6,7 +7,15 @@ const contract = require('../OnChainNFT.json');
 // eslint-disable-next-line @typescript-eslint/no-var-requires, import/extensions
 const tokenContractData = require('../MandalaCoin.json');
 
-export const web3 = (window as unknown as WindowWithWeb3).AlchemyWeb3.createAlchemyWeb3(process.env.API_URL as string);
+type Eth = AlchemyEth & {
+  getMaxPriorityFeePerGas: () => Promise<string>;
+}
+
+type Web3 = AlchemyWeb3 & {
+  eth: Eth;
+}
+
+export const web3 = (window as unknown as WindowWithWeb3).AlchemyWeb3.createAlchemyWeb3(process.env.API_URL as string) as Web3;
 // const oldcontractAddress = '0x8272a54660b9ffb18d93e591d2d88c4e7ef27cd5';
 const newContractAddress = process.env.CONTRACT_ADDRESS;
 

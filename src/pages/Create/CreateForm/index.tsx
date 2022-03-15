@@ -56,7 +56,7 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
   }, [account, checkTokenBalance, tokenBalance]);
 
   const [formValues, setFormValues] = useState<Partial<FormValues>>({
-    maxGas: '20000000',
+    maxGas: '15000000',
   });
 
   const {

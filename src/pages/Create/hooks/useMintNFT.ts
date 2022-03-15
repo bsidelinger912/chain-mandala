@@ -11,6 +11,7 @@ import {
 } from '../../../web3';
 import imageUri from '../atoms/imageUri';
 import shapes, { emptyShapes, Shapes } from '../atoms/shapes';
+import { getMaxPriorityFee } from './util';
 
 export type MintStatus = 'idle' | 'loading' | 'confirming' | 'success' | 'error';
 
@@ -69,7 +70,7 @@ export default function useMintNFT(): UseMintNFT {
     try {
       const encodedMetaData = getEncodedMetaData(imageUriState as string, shapesState);
 
-      const maxPriorityFee = await (web3.eth as any).getMaxPriorityFeePerGas();
+      const maxPriorityFee = await getMaxPriorityFee();
 
       const tx = {
         from: account as string,
