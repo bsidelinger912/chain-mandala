@@ -2,15 +2,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-const { ethers, upgrades } = require('hardhat');
+const { ethers } = require('hardhat');
 
 async function main() {
   const MyNFT = await ethers.getContractFactory('OnChainNFT');
 
   // Start deployment, returning a promise that resolves to a contract object
-  // const myNFT = await MyNFT.deploy();
-  const myNFT = await upgrades.deployProxy(MyNFT);
-  // await myNFT.deployed();
+  const myNFT = await MyNFT.deploy();
   console.log('Contract deployed to address:', myNFT.address);
 }
 

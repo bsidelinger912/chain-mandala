@@ -2,22 +2,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract OnChainNFT is Initializable, ERC721URIStorageUpgradeable, OwnableUpgradeable {
+contract OnChainNFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     IERC20 private mandalaCoin;
     string private startString;
 
-    function initialize() public initializer {
-        __ERC721_init("OnChainNFT", "NFT");
-        __Ownable_init();
+    constructor() ERC721("OnChainNFT", "NFT") {
         mandalaCoin = IERC20(0xfCf181ddb07d3a0515F2325d455Aa234E670B248);
         startString = "data:application/json;base64,";
     }
