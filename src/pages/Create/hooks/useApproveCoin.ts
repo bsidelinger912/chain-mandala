@@ -4,6 +4,7 @@ import { useRecoilState } from 'recoil';
 import { useAuth } from '../../../auth/AuthProvider';
 import approveCoin from '../atoms/approveCoin';
 import { contractAddress, tokenContract, web3 } from '../../../web3';
+import { getMaxPriorityFee } from './util';
 
 export type ApproveStatus = 'idle' | 'loading' | 'success' | 'error';
 
@@ -23,7 +24,7 @@ export default function useApproveCoin(): UseApproveCoin {
   const approve = useCallback(async (): Promise<void> => {
     try {
       setApproving({ status: 'loading' });
-      const maxPriorityFee = await (web3.eth as any).getMaxPriorityFeePerGas();
+      const maxPriorityFee = await getMaxPriorityFee();
       await tokenContract.methods.approve(contractAddress, '1000000000000000000').send({ from: account, maxPriorityFeePerGas: maxPriorityFee });
       setApproving({ status: 'success' });
     } catch (e: any) { // eslint-disable-line @typescript-eslint/no-explicit-any

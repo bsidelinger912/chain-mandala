@@ -4,14 +4,15 @@ import { useRecoilState } from 'recoil';
 import { TransactionReceipt } from 'web3-core';
 
 import { useAuth } from '../../../auth/AuthProvider';
-import { NFTMetaData } from '../../../types';
+import { NFTMetaData, TransactionConfig } from '../../../types';
 import { createMetaData } from '../../../util';
 import {
   contractAddress, nftContract, web3,
 } from '../../../web3';
+import approveCoin from '../atoms/approveCoin';
 import imageUri from '../atoms/imageUri';
 import shapes, { emptyShapes, Shapes } from '../atoms/shapes';
-import { getMaxPriorityFee } from './util';
+import { getGas, getMaxPriorityFee } from './util';
 
 export type MintStatus = 'idle' | 'loading' | 'confirming' | 'success' | 'error';
 
@@ -21,7 +22,7 @@ export interface UseMintNFT {
     error?: string;
     transactionHash?: string;
   },
-  mint: (maxGas: string) => Promise<void>;
+  mint: () => Promise<void>;
   clearMintState: () => void;
 }
 
@@ -45,6 +46,7 @@ const getEncodedMetaData = (image: string, currentShapes: Shapes): string | unde
 export default function useMintNFT(): UseMintNFT {
   const [imageUriState, setImageUriState] = useRecoilState(imageUri);
   const [shapesState, setShapesState] = useRecoilState(shapes);
+  const [_, setApproving] = useRecoilState(approveCoin);
 
   const [mintStatus, setMintStatus] = useState<MintStatus>('idle');
   const [mintError, setMintError] = useState<string>();
@@ -58,7 +60,7 @@ export default function useMintNFT(): UseMintNFT {
     setTransactionHash(undefined);
   };
 
-  const mint = async (maxGas: string): Promise<void> => {
+  const mint = async (): Promise<void> => {
     if (!imageUriState) {
       setMintError('Image not ready for minting');
       return;
@@ -70,17 +72,21 @@ export default function useMintNFT(): UseMintNFT {
     try {
       const encodedMetaData = getEncodedMetaData(imageUriState as string, shapesState);
 
-      const maxPriorityFee = await getMaxPriorityFee();
-
-      const tx = {
+      const tx: TransactionConfig = {
         from: account as string,
         to: contractAddress,
-        gas: maxGas,
         data: nftContract.methods.mintNFT(account, encodedMetaData).encodeABI(),
+      };
+
+      const [maxPriorityFee, maxGas] = await Promise.all([getMaxPriorityFee(), getGas(tx)]);
+
+      const finalTx: TransactionConfig = {
+        ...tx,
+        gas: maxGas,
         maxPriorityFeePerGas: maxPriorityFee,
       };
 
-      web3.eth.sendTransaction(tx)
+      web3.eth.sendTransaction(finalTx)
         .on('transactionHash', (hash) => {
           setTransactionHash(hash);
           setMintStatus('confirming');
@@ -90,6 +96,7 @@ export default function useMintNFT(): UseMintNFT {
             setMintStatus('success');
             setImageUriState(undefined);
             setShapesState(emptyShapes);
+            setApproving({ status: 'idle' });
           } else {
             setMintError('Error minting token');
             setMintStatus('error');

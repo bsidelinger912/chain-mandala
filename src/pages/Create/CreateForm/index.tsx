@@ -3,9 +3,7 @@
  * @description
  */
 
-import React, {
-  ChangeEvent, useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -18,7 +16,6 @@ import birthDate from '../atoms/birthDate';
 import BirthDate from './BirthDate';
 import GenerateButton from './GenerateButton';
 import MintingFields from './MintingFields';
-import { FormValues } from './types';
 import Transaction, { Props as TransactionProps } from './Transaction';
 import { ButtonWrapper, Heading } from './components';
 import { useAuth } from '../../../auth/AuthProvider';
@@ -55,10 +52,6 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
     }
   }, [account, checkTokenBalance, tokenBalance]);
 
-  const [formValues, setFormValues] = useState<Partial<FormValues>>({
-    maxGas: '15000000',
-  });
-
   const {
     minting, mint, clearMintState,
   } = useMintNFT();
@@ -66,33 +59,11 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
   // TODO: fix this cast
   const { generate, generating } = useGenerateSVG(birthDateState as number, svgRef);
 
-  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormValues((currentFormValues) => ({
-      ...formValues,
-      [name]: value,
-      errors: {
-        ...(currentFormValues.errors || {}),
-        [name]: undefined,
-      },
-    }));
-  }, [formValues]);
-
   const handleSubmit = useCallback<React.FormEventHandler<HTMLFormElement>>((e) => {
     e.preventDefault();
 
-    if (!formValues.maxGas) {
-      setFormValues((currentFormValues) => ({
-        ...currentFormValues,
-        errors: {
-          maxGas: 'You must enter Max Gas',
-        },
-      }));
-      return;
-    }
-
-    mint(formValues.maxGas);
-  }, [formValues, mint]);
+    mint();
+  }, [mint]);
 
   if (minting.transactionHash) {
     return <Transaction minting={minting as TransactionProps['minting']} clearMintState={clearMintState} />;
@@ -136,7 +107,7 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
       <Heading variant="h4">Mint your NFT</Heading>
       <BirthDate />
       <GenerateButton generate={generate} generating={generating} />
-      <MintingFields handleChange={handleChange} formValues={formValues} minting={minting} />
+      <MintingFields minting={minting} />
     </form>
   );
 };

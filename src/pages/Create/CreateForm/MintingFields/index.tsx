@@ -4,35 +4,25 @@
  */
 
 import React, {
-  ChangeEvent, useCallback, useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import { useRecoilState } from 'recoil';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import styled from 'styled-components';
 
-import { InlineControl, SubmitLoader } from '../components';
+import { SubmitLoader } from '../components';
 import imageUri from '../../atoms/imageUri';
 import { useAuth } from '../../../../auth/AuthProvider';
 import { UseMintNFT } from '../../hooks/useMintNFT';
-import { FormValues } from '../types';
 import birthDate from '../../atoms/birthDate';
 import { tokenContract } from '../../../../web3';
 import ApproveButton from './ApproveButton';
 import useApproveCoin from '../../hooks/useApproveCoin';
 
 export interface Props {
-  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   minting?: UseMintNFT['minting'];
-  formValues: Partial<FormValues>;
 }
-
-const FullWidthControl = styled(FormControl)`
-  width: 100%;
-`;
 
 const SubmitButtonWrapper = styled.div`
   display: flex;
@@ -43,9 +33,7 @@ const SubmitButtonWrapper = styled.div`
   }
 `;
 
-const MintingFields: React.FC<Props> = ({
-  handleChange, minting, formValues,
-}) => {
+const MintingFields: React.FC<Props> = ({ minting }) => {
   const [imageUriState] = useRecoilState(imageUri);
   const [birthDateState] = useRecoilState(birthDate);
 
@@ -71,16 +59,10 @@ const MintingFields: React.FC<Props> = ({
 
   return (
     <>
-      <FullWidthControl>
-        <InlineControl>
-          <FormLabel htmlFor="maxGas">Max Gas</FormLabel>
-          <TextField onChange={handleChange} id="maxGas" name="maxGas" variant="outlined" value={formValues.maxGas} />
-        </InlineControl>
-      </FullWidthControl>
       {minting?.error && <Alert severity="error">{minting.error}</Alert>}
       <SubmitButtonWrapper>
         <ApproveButton />
-        <Button disabled={minting?.status === 'loading'} type="submit" variant="contained" size="large">
+        <Button disabled={minting?.status === 'loading' || approving.status !== 'success'} type="submit" variant="contained" size="large">
           Mint NFT
           {minting?.status === 'loading' && <SubmitLoader size={20} />}
         </Button>
