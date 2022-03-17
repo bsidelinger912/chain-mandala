@@ -11,6 +11,7 @@ import styled from 'styled-components';
 
 import { PrevNFTWithTokenId } from '../../chainData/Provider';
 import Attribute from './Attribute';
+import { useAuth } from '../../auth/AuthProvider';
 
 export type Props = PrevNFTWithTokenId & {
   onClose: () => void;
@@ -54,26 +55,31 @@ const CloseButtonWrapper = styled.div`
 
 const MandalaModal: React.FC<Props> = ({
   metaData, tokenId, onClose, owner,
-}) => (
-  <Modal open onClose={onClose} onBackdropClick={onClose}>
-    <ContentWrapper>
-      <CloseButtonWrapper>
-        <IconButton onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </CloseButtonWrapper>
-      <ImageWrapper>
-        <img alt={`OnChainNFT # ${tokenId}`} src={metaData.image} />
-      </ImageWrapper>
-      <InfoWrapper>
-        <Attribute name="Token ID" value={tokenId.toString()} />
-        <Attribute name="Owner" value={`${owner.substr(0, 20)}...`} />
-        {metaData.attributes.map((attribute) => (
-          <Attribute name={attribute.trait_type} key={attribute.trait_type} value={attribute.value} />
-        ))}
-      </InfoWrapper>
-    </ContentWrapper>
-  </Modal>
-);
+}) => {
+  const { account } = useAuth();
+  const ownerText = account && account === owner ? 'Congrats, You own this Mandala' : `${owner.substr(0, 20)}...`;
+
+  return (
+    <Modal open onClose={onClose} onBackdropClick={onClose}>
+      <ContentWrapper>
+        <CloseButtonWrapper>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </CloseButtonWrapper>
+        <ImageWrapper>
+          <img alt={`OnChainNFT # ${tokenId}`} src={metaData.image} />
+        </ImageWrapper>
+        <InfoWrapper>
+          <Attribute name="Token ID" value={tokenId.toString()} />
+          <Attribute name="Owner" value={ownerText} />
+          {metaData.attributes.map((attribute) => (
+            <Attribute name={attribute.trait_type} key={attribute.trait_type} value={attribute.value} />
+          ))}
+        </InfoWrapper>
+      </ContentWrapper>
+    </Modal>
+  );
+};
 
 export default MandalaModal;
