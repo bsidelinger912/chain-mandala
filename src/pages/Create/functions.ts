@@ -3,7 +3,7 @@ import {
 } from './constants';
 import {
   Curve,
-  Line, Pallette, Perpendicular, Shape,
+  Line, Perpendicular, Shape,
 } from './types';
 
 export function getSymmetryPoints(x: number, y: number, radian: number): number[][] {
@@ -16,15 +16,16 @@ export function getSymmetryPoints(x: number, y: number, radian: number): number[
   const dist = Math.hypot(relX, relY);
   const angle = Math.atan2(relX, relY); // Radians
   const result = [];
+  let xInc = x;
+  let yInc = y;
   for (let i = 0; i < radian; i++) {
     const theta = angle + ((Math.PI * 2) / radian) * i; // Radians
-    x = ctrX + Math.sin(theta) * dist;
-    y = ctrY - Math.cos(theta) * dist;
-    result.push([x, y]);
-    if (true) {
-      x = ctrX - Math.sin(theta) * dist;
-      result.push([x, y]);
-    }
+    xInc = ctrX + Math.sin(theta) * dist;
+    yInc = ctrY - Math.cos(theta) * dist;
+    result.push([xInc, yInc]);
+
+    xInc = ctrX - Math.sin(theta) * dist;
+    result.push([xInc, yInc]);
   }
 
   return result;
@@ -40,11 +41,7 @@ export function getIterations(radian: number): number {
   return Math.ceil(30 / radian);
 }
 
-export function getRandomColor(pallette: Pallette): string {
-  return pallette.tones[Math.round(Math.random() * pallette.tones.length)];
-}
-
-export const getLine = (x: number, y: number, radian: number, colors: string[]): Line[] => {
+export const getLine = (x: number, y: number, radian: number, color: string): Line[] => {
   const xDelta = Math.round((Math.random() * lineMaxDistance) - (lineMaxDistance / 2));
   const yDelta = Math.round((Math.random() * lineMaxDistance) - (lineMaxDistance / 2));
 
@@ -54,7 +51,6 @@ export const getLine = (x: number, y: number, radian: number, colors: string[]):
   const startPoints = getSymmetryPoints(x, y, radian);
   const endPoints = getSymmetryPoints(x2, y2, radian);
 
-  const color = colors[Math.round(Math.random() * colors.length)];
   const width = Math.round(Math.random() * 5);
 
   return startPoints.map((_, i) => ({
@@ -67,10 +63,10 @@ export const getLine = (x: number, y: number, radian: number, colors: string[]):
   }));
 };
 
-export function getPerpendicular(x: number, y: number, radian: number, colors: string[]): Perpendicular[] {
+export function getPerpendicular(x: number, y: number, radian: number, color: string): Perpendicular[] {
   const endLength = Math.round(Math.random() * lineMaxDistance);
 
-  return getLine(x, y, radian, colors).map((line, index) => {
+  return getLine(x, y, radian, color).map((line, index) => {
     const {
       x1, y1, x2, y2,
     } = line;
@@ -86,8 +82,8 @@ export function getPerpendicular(x: number, y: number, radian: number, colors: s
   });
 }
 
-export function getCurve(x: number, y: number, radian: number, colors: string[]): Curve[] {
-  return getPerpendicular(x, y, radian, colors);
+export function getCurve(x: number, y: number, radian: number, color: string): Curve[] {
+  return getPerpendicular(x, y, radian, color);
 }
 
 export function getDistance(x1: number, y1: number, x2: number, y2: number): number {

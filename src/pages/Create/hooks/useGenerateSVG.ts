@@ -10,7 +10,7 @@ import {
 } from '../functions';
 import shapes from '../atoms/shapes';
 import imageUri from '../atoms/imageUri';
-import { getColors } from '../../../colors';
+import { getRandomColor } from '../../../colors';
 
 interface UseGenerateSVG {
   generate: () => void;
@@ -55,20 +55,20 @@ export default function useGenerateSVG(birthDate: number, svgRef: React.MutableR
           case 'perpendicular':
             return {
               ...currentShapesState,
-              perpendiculars: currentShapesState.perpendiculars.concat(getPerpendicular(x, y, radian, getColors(birthDate))),
+              perpendiculars: currentShapesState.perpendiculars.concat(getPerpendicular(x, y, radian, getRandomColor(birthDate))),
             };
 
           case 'arc':
             return {
               ...currentShapesState,
-              curves: currentShapesState.curves.concat(getCurve(x, y, radian, getColors(birthDate))),
+              curves: currentShapesState.curves.concat(getCurve(x, y, radian, getRandomColor(birthDate))),
             };
 
           case 'line':
           default:
             return {
               ...currentShapesState,
-              lines: currentShapesState.lines.concat(getLine(x, y, radian, getColors(birthDate))),
+              lines: currentShapesState.lines.concat(getLine(x, y, radian, getRandomColor(birthDate))),
             };
         }
       });
