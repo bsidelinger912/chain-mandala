@@ -22,12 +22,24 @@ const Title = styled(Typography)`
   text-decoration: none;
 ` as typeof Typography;
 
+const ChainList = styled.div`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+`;
+
 const Header: React.FC = () => (
   <Main>
     <div>
       <Title component={Link} to="/" variant="h2">On-chain Mandala</Title>
       <Typography variant="h5">Digital art with permanence</Typography>
     </div>
+    <ChainList>
+      <Typography variant="subtitle1">
+        Currently deployed on: &nbsp;
+      </Typography>
+      <img width="30" height="30" src="./polygon-matic-logo.png" alt="polygon" />
+    </ChainList>
   </Main>
 );
 

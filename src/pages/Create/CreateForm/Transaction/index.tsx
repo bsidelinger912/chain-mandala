@@ -12,6 +12,7 @@ import styled from 'styled-components';
 
 import { Heading } from '../components';
 import { UseMintNFT } from '../../hooks/useMintNFT';
+import config from '../../../../config';
 
 export interface Props {
   minting: UseMintNFT['minting'] & {
@@ -43,7 +44,7 @@ const RetryButton = styled(Button)`
 
 const Transaction: React.FC<Props> = ({ minting, clearMintState }) => {
   const scanLink = (
-    <a href={`${process.env.BLOCK_EXPLORER_URL}${minting.transactionHash}`} target="_blank" rel="noreferrer">
+    <a href={`${config.blockExplorerUrl}${minting.transactionHash}`} target="_blank" rel="noreferrer">
       {`${minting.transactionHash.substr(0, 20)}...`}
       <OpenInNewIcon />
     </a>

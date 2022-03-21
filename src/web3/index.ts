@@ -1,4 +1,5 @@
 import { AlchemyEth, AlchemyWeb3 } from '@alch/alchemy-web3';
+import config from '../config';
 import { WindowWithWeb3 } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, import/extensions
@@ -15,11 +16,9 @@ type Web3 = AlchemyWeb3 & {
   eth: Eth;
 }
 
-export const web3 = (window as unknown as WindowWithWeb3).AlchemyWeb3.createAlchemyWeb3(process.env.API_URL as string) as Web3;
-// const oldcontractAddress = '0x8272a54660b9ffb18d93e591d2d88c4e7ef27cd5';
-const newContractAddress = process.env.CONTRACT_ADDRESS;
+export const web3 = (window as unknown as WindowWithWeb3).AlchemyWeb3.createAlchemyWeb3(config.apiUrl) as Web3;
 
-export const nftContract = new web3.eth.Contract(contract.abi, newContractAddress);
-export const contractAddress = newContractAddress;
+export const { contractAddress } = config;
+export const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
-export const tokenContract = new web3.eth.Contract(tokenContractData.abi, process.env.TOKEN_ADDRESS);
+export const tokenContract = new web3.eth.Contract(tokenContractData.abi, config.tokenAddress);
