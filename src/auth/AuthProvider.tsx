@@ -22,6 +22,7 @@ export interface AuthContext {
   disconnect: () => Promise<void>;
   active: boolean;
   account?: string | null;
+  chainId?: number;
 }
 
 const ctx = createContext<AuthContext>({} as AuthContext);
@@ -30,7 +31,7 @@ export const useAuth = (): AuthContext => useContext(ctx);
 
 const AuthProvider: React.FC = ({ children }) => {
   const {
-    active, account, activate, deactivate, connector,
+    active, account, activate, deactivate, chainId,
   } = useWeb3React();
 
   const connect = useCallback(async (): Promise<void> => {
@@ -61,7 +62,8 @@ const AuthProvider: React.FC = ({ children }) => {
     disconnect,
     active,
     account,
-  }), [account, active, connect, disconnect]);
+    chainId,
+  }), [account, active, connect, disconnect, chainId]);
 
   return (
     <ctx.Provider value={contextValue}>{children}</ctx.Provider>

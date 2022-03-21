@@ -20,6 +20,7 @@ import Transaction, { Props as TransactionProps } from './Transaction';
 import { ButtonWrapper, Heading } from './components';
 import { useAuth } from '../../../auth/AuthProvider';
 import { tokenContract } from '../../../web3';
+import config from '../../../config';
 
 export interface Props {
   svgRef: React.MutableRefObject<SVGSVGElement | undefined>;
@@ -39,7 +40,8 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
   const [birthDateState] = useRecoilState(birthDate);
   const [tokenBalance, setTokenBalance] = useState<number>();
 
-  const { account, connect } = useAuth();
+  const { account, connect, chainId } = useAuth();
+  const chainError = !(chainId && config.chainIDs.find((ch) => ch === chainId));
 
   const checkTokenBalance = useCallback(async () => {
     const balance = await tokenContract.methods.balanceOf(account).call();
@@ -56,7 +58,6 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
     minting, mint, clearMintState,
   } = useMintNFT();
 
-  // TODO: fix this cast
   const { generate, generating } = useGenerateSVG(birthDateState as number, svgRef);
 
   const handleSubmit = useCallback<React.FormEventHandler<HTMLFormElement>>((e) => {
@@ -72,14 +73,27 @@ const CreateForm: React.FC<Props> = ({ svgRef }) => {
   if (!account) {
     return (
       <>
-        <Heading variant="h4">First, connect your Wallet</Heading>
+        <Heading variant="h4">First, connect your Polygon Wallet</Heading>
+        <p>
+          Make sure your wallet has the Polygon Network selected!
+        </p>
         <ButtonWrapper>
           <Button onClick={connect} size="large" variant="contained">
             Connect
           </Button>
         </ButtonWrapper>
       </>
+    );
+  }
 
+  if (chainError) {
+    return (
+      <>
+        <Heading variant="h4">You must connect to the Polygon network</Heading>
+        <p>
+          Open your connected wallet and switch to Polygon
+        </p>
+      </>
     );
   }
 
