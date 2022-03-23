@@ -37,9 +37,8 @@ const AuthProvider: React.FC = ({ children }) => {
   const connect = useCallback(async (): Promise<void> => {
     try {
       await activate(injected);
-    } catch (ex) {
-      console.error('TODO: error handling');
-      console.error(ex);
+    } catch (e) {
+      console.error('Error connecting wallet', e);
     }
   }, [activate]);
 
@@ -48,12 +47,16 @@ const AuthProvider: React.FC = ({ children }) => {
   }, [deactivate]);
 
   useEffect(() => {
-    web3.eth.getAccounts()
-      .then((addr: string[]) => {
-        if (addr.length > 0) {
+    (async function tryConnect() {
+      try {
+        const accounts: string[] = await web3.eth.getAccounts();
+        if (accounts.length > 0) {
           connect();
         }
-      });
+      } catch (e) {
+        // this means they don't have a wallet in their browser
+      }
+    }());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

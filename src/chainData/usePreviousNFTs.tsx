@@ -17,6 +17,7 @@ export default function usePreviousNFTs(numberOfNFTs: number, offset?: number): 
 
   const load = useCallback(async () => {
     setLoading(true);
+
     try {
       const prev = await getPreviousNFTs(numberOfNFTs, offset);
 

@@ -69,11 +69,11 @@ const ChainDataProvider: React.FC = ({ children }) => {
       const json = atob(encoded);
       return {
         metaData: JSON.parse(json),
-        tokenId: index + 1,
+        tokenId: latestTokenNumber - index - (offset || 0),
         owner: result.owner,
       } as PrevNFTWithTokenId;
     });
-  }, [latestTokenId]);
+  }, []);
 
   const value = useMemo<ChainDataContext>(() => ({
     latestTokenId,

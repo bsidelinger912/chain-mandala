@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Button, CircularProgress } from '@mui/material';
 import Alert from '@mui/material/Alert';
+import Link from '@mui/material/Link';
 import styled from 'styled-components';
 
 import { Heading } from '../components';
@@ -44,10 +45,10 @@ const RetryButton = styled(Button)`
 
 const Transaction: React.FC<Props> = ({ minting, clearMintState }) => {
   const scanLink = (
-    <a href={`${config.blockExplorerUrl}${minting.transactionHash}`} target="_blank" rel="noreferrer">
+    <Link href={`${config.blockExplorerUrl}tx/${minting.transactionHash}`} target="_blank" rel="noreferrer">
       {`${minting.transactionHash.substr(0, 20)}...`}
       <OpenInNewIcon />
-    </a>
+    </Link>
   );
 
   if (minting.status === 'error') {

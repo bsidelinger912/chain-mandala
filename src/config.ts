@@ -12,7 +12,7 @@ const chainEnv = process.env.CHAIN_ENV as Config['chainEnv'];
 const config: Config = {
   chainEnv,
   chainIDs: chainEnv === 'production' ? [137] : [80001],
-  blockExplorerUrl: chainEnv === 'production' ? 'https://polygonscan.com/tx/' : 'https://mumbai.polygonscan.com/tx/',
+  blockExplorerUrl: chainEnv === 'production' ? 'https://polygonscan.com/' : 'https://mumbai.polygonscan.com/',
   apiUrl: chainEnv === 'production'
     ? 'https://polygon-mainnet.g.alchemy.com/v2/ZkhqWnD_yJHX3Jh-kxyc-6OsGf7BOOTM'
     : 'https://polygon-mumbai.g.alchemy.com/v2/FenTMGjvdg8V-CWq7gnLHC5k4lKVnOpV',

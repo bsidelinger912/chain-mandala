@@ -31,7 +31,7 @@ const ChainList = styled.div`
 const Header: React.FC = () => (
   <Main>
     <div>
-      <Title component={Link} to="/" variant="h2">On-chain Mandala</Title>
+      <Title component={Link} to="/" variant="h2">Chain Mandala</Title>
       <Typography variant="h5">Digital art with permanence</Typography>
     </div>
     <ChainList>
