@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Routes, Route } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -12,6 +11,7 @@ import Header from './Header';
 
 import Home from './pages/Home';
 import Create from './pages/Create';
+import Modal from './components/Modal';
 
 const theme = createTheme({
   palette: {
@@ -29,24 +29,30 @@ const Page = styled.div`
   margin: 0 auto;
 `;
 
-const App: React.FC = () => (
-  <RecoilRoot>
-    <AuthProvider>
-      <ChainDataProvider>
-        <ThemeProvider theme={theme}>
-          <Wrapper>
-            <Page>
-              <Header />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/create" element={<Create />} />
-              </Routes>
-            </Page>
-          </Wrapper>
-        </ThemeProvider>
-      </ChainDataProvider>
-    </AuthProvider>
-  </RecoilRoot>
-);
+const App: React.FC = () => {
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+
+  const onCreateModalClose = (): void => setCreateModalOpen(false);
+
+  return (
+    <RecoilRoot>
+      <AuthProvider>
+        <ChainDataProvider>
+          <ThemeProvider theme={theme}>
+            <Wrapper>
+              <Page>
+                <Header />
+                <Home onMintButtonClick={() => setCreateModalOpen(true)} />
+                <Modal open={createModalOpen} onClose={onCreateModalClose}>
+                  <Create />
+                </Modal>
+              </Page>
+            </Wrapper>
+          </ThemeProvider>
+        </ChainDataProvider>
+      </AuthProvider>
+    </RecoilRoot>
+  );
+};
 
 export default App;

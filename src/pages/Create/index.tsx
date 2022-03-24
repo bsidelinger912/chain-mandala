@@ -13,6 +13,7 @@ import Preview from './Preview';
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
+  padding: 15px;
 
   > div {
     width: 50%;

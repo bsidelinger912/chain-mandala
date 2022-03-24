@@ -4,14 +4,12 @@
  */
 
 import React from 'react';
-import Modal from '@mui/material/Modal';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
 import styled from 'styled-components';
 
 import { PrevNFTWithTokenId } from '../../chainData/Provider';
 import Attribute from './Attribute';
 import { useAuth } from '../../auth/AuthProvider';
+import Modal from '../Modal';
 
 export type Props = PrevNFTWithTokenId & {
   onClose: () => void;
@@ -21,18 +19,9 @@ const imageHeight = '90vh';
 const infoWidth = '270px';
 
 const ContentWrapper = styled.div`
-  position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: row;
-  height: ${imageHeight};
-  width: calc(${imageHeight} + ${infoWidth});
-  margin: 5vh auto 0;
-  background-color: #282c34;
-  color: white;
-  border: 1px solid white;
-  border-radius: 5px;
-  outline: none;
 `;
 
 const ImageWrapper = styled.div`
@@ -47,12 +36,6 @@ const InfoWrapper = styled.div`
   width: ${infoWidth};
 `;
 
-const CloseButtonWrapper = styled.div`
-  position: absolute;
-  right: 10px;
-  top: 10px;
-`;
-
 const MandalaModal: React.FC<Props> = ({
   metaData, tokenId, onClose, owner,
 }) => {
@@ -60,13 +43,8 @@ const MandalaModal: React.FC<Props> = ({
   const ownerText = account && account === owner ? 'Congrats, You own this Mandala' : `${owner.substr(0, 20)}...`;
 
   return (
-    <Modal open onClose={onClose} onBackdropClick={onClose}>
+    <Modal open onClose={onClose}>
       <ContentWrapper>
-        <CloseButtonWrapper>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        </CloseButtonWrapper>
         <ImageWrapper>
           <img alt={`OnChainNFT # ${tokenId}`} src={metaData.image} />
         </ImageWrapper>

@@ -5,7 +5,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -14,6 +13,10 @@ import MuiLink from '@mui/material/Link';
 import LatestNFT from './LatestNFT';
 import PreviousNFTs from './PreviousNFTs';
 import config from '../../config';
+
+interface Props {
+  onMintButtonClick: () => void;
+}
 
 const TopRow = styled.div`
   display: flex;
@@ -38,9 +41,9 @@ const LinkHeader = styled(Typography)`
 
 const MintButton = styled(Button)`
   margin: 30px 0 20px;
-` as any;
+`;
 
-const Home: React.FC = () => (
+const Home: React.FC<Props> = ({ onMintButtonClick }) => (
   <div>
     <TopRow>
       <LatestNFTHolder>
@@ -59,7 +62,14 @@ const Home: React.FC = () => (
           You also need to make sure you have Polygon set up on your wallet, the project is currently only deployed to Polygon.
         </p>
 
-        <MintButton size="large" variant="contained" component={Link} to="/create">
+        <MintButton
+          size="large"
+          variant="contained"
+          onClick={(e) => {
+            e.preventDefault();
+            onMintButtonClick();
+          }}
+        >
           I have some MDLA token, lets mint!
         </MintButton>
 
