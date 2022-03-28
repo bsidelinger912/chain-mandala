@@ -19,6 +19,7 @@ import birthDate from '../../atoms/birthDate';
 import { tokenContract } from '../../../../web3';
 import ApproveButton from './ApproveButton';
 import useApproveCoin from '../../hooks/useApproveCoin';
+import { singleColumnWidth } from '../../../../cssConstants';
 
 export interface Props {
   minting?: UseMintNFT['minting'];
@@ -30,6 +31,19 @@ const SubmitButtonWrapper = styled.div`
 
   button {
     margin-left: 30px;
+  }
+
+  @media (max-width: ${singleColumnWidth}) {
+    flex-direction: column;
+    justify-content: flex-start;
+
+    button {
+      margin-left: 0;
+
+      &:first-child {
+        margin-bottom: 20px;
+      }
+    }
   }
 `;
 

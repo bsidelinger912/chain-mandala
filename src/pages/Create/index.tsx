@@ -9,6 +9,7 @@ import Card from '@mui/material/Card';
 
 import CreateForm from './CreateForm';
 import Preview from './Preview';
+import { singleColumnWidth } from '../../cssConstants';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -21,6 +22,18 @@ const Wrapper = styled.div`
 
   > div:last-child {
     margin-left: 20px;
+  }
+
+  @media (max-width: ${singleColumnWidth}) {
+    flex-direction: column;
+
+    > div {
+      width: 100%;
+    }
+
+    > div:last-child {
+      margin-left: 0;
+    }
   }
 `;
 

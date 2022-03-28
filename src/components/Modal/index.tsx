@@ -9,7 +9,7 @@ import MuiModal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { pageWidth } from '../../cssConstants';
+import { pageWidth, singleColumnWidth } from '../../cssConstants';
 
 export interface Props {
   open: boolean;
@@ -19,16 +19,26 @@ export interface Props {
 const ContentWrapper = styled.div`
   position: relative;
   overflow: hidden;
+  box-sizing: content-box;
   display: flex;
   flex-direction: row;
   height: 90vh;
-  width: ${pageWidth};
+  max-width: ${pageWidth};
   margin:  5vh auto 0;
   background-color: #282c34;
   color: white;
   border: 1px solid white;
   border-radius: 5px;
   outline: none;
+
+  @media (max-width: ${pageWidth}) {
+    width: calc(100% - 20px);
+  }
+
+  @media (max-width: ${singleColumnWidth}) {
+    height: auto;
+    margin: 10px auto 0;
+  }
 `;
 
 const CloseButtonWrapper = styled.div`

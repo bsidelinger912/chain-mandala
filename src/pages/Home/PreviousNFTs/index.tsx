@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import CenteredLoader from '../../../components/CenteredLoader';
 import NFTDisplay from './NFTDisplay';
 import usePreviousNFTs from '../../../chainData/usePreviousNFTs';
+import { singleColumnWidth } from '../../../cssConstants';
 
 const Wrapper = styled.div`
   margin-top: 30px;
@@ -17,13 +18,19 @@ const Wrapper = styled.div`
 
 const ListWrapper = styled.div`
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
   min-height: 200px;
 `;
 
 const Item = styled.div`
-  width: 200px;
-  padding: 10px;
+  width: calc(25% - 20px);
+  box-sizing: border-box;
+  margin: 20px 0;
+
+  @media (max-width: ${singleColumnWidth}) {
+    width: calc(50% - 10px);
+  }
 `;
 
 const PreviousNFTs: React.FC = () => {

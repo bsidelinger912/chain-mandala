@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import { singleColumnWidth } from '../../../cssConstants';
 
 export const InlineControl = styled.div`
   display: flex;
@@ -41,6 +42,10 @@ export const ButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin: 50px 0;
+
+  @media (max-width: ${singleColumnWidth}) {
+    margin: 20px 0;
+  }
 `;
 
 export const SubmitLoader = styled(CircularProgress)`

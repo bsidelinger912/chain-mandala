@@ -13,6 +13,7 @@ import MuiLink from '@mui/material/Link';
 import LatestNFT from './LatestNFT';
 import PreviousNFTs from './PreviousNFTs';
 import config from '../../config';
+import { singleColumnWidth } from '../../cssConstants';
 
 interface Props {
   onMintButtonClick: () => void;
@@ -20,15 +21,29 @@ interface Props {
 
 const TopRow = styled.div`
   display: flex;
+
+  @media (max-width: ${singleColumnWidth}) {
+    flex-direction: column;
+  }
 `;
 
 const LatestNFTHolder = styled.div`
   width: 50%;
   margin-right: 20px;
+
+  @media (max-width: ${singleColumnWidth}) {
+    width: 100%;
+    margin: 0;
+  }
 `;
 
 const BlurbHolder = styled.div`
   width: 50%;
+
+  @media (max-width: ${singleColumnWidth}) {
+    width: 100%;
+    margin-top: 20px;
+  }
 `;
 
 const BlurbHeader = styled(Typography)`
@@ -41,6 +56,18 @@ const LinkHeader = styled(Typography)`
 
 const MintButton = styled(Button)`
   margin: 30px 0 20px;
+`;
+
+const ContractLink = styled(MuiLink)`
+  display: flex;
+  align-items: center;
+`;
+
+const ContractAddress = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 5px;
 `;
 
 const Home: React.FC<Props> = ({ onMintButtonClick }) => (
@@ -75,10 +102,10 @@ const Home: React.FC<Props> = ({ onMintButtonClick }) => (
 
         <div>
           <LinkHeader variant="h6">View the contract</LinkHeader>
-          <MuiLink href={`${config.blockExplorerUrl}address/${config.contractAddress}`} target="_blank" rel="noreferrer">
-            {`${config.contractAddress}`}
+          <ContractLink href={`${config.blockExplorerUrl}address/${config.contractAddress}`} target="_blank" rel="noreferrer">
+            <ContractAddress>{config.contractAddress}</ContractAddress>
             <OpenInNewIcon />
-          </MuiLink>
+          </ContractLink>
         </div>
       </BlurbHolder>
     </TopRow>

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import './App.css';
 import AuthProvider from './auth/AuthProvider';
 import ChainDataProvider from './chainData/Provider';
 import { pageWidth, textColor } from './cssConstants';
@@ -27,6 +26,10 @@ const Wrapper = styled.div`
 const Page = styled.div`
   max-width: ${pageWidth};
   margin: 0 auto;
+
+  @media (max-width: ${pageWidth}) {
+    padding: 0 15px;
+  }
 `;
 
 const App: React.FC = () => {
