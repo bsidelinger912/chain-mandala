@@ -14,6 +14,7 @@ import LatestNFT from './LatestNFT';
 import PreviousNFTs from './PreviousNFTs';
 import config from '../../config';
 import { singleColumnWidth } from '../../cssConstants';
+import LogoLink from './LogoLink';
 
 interface Props {
   onMintButtonClick: () => void;
@@ -70,6 +71,11 @@ const ContractAddress = styled.span`
   margin-right: 5px;
 `;
 
+const LogoLinks = styled.div`
+  display: flex;
+  margin: 30px 0 0;
+`;
+
 const Home: React.FC<Props> = ({ onMintButtonClick }) => (
   <div>
     <TopRow>
@@ -107,6 +113,10 @@ const Home: React.FC<Props> = ({ onMintButtonClick }) => (
             <OpenInNewIcon />
           </ContractLink>
         </div>
+
+        <LogoLinks>
+          <LogoLink image="./opensea-logo.png" tooltipText="View on Opensea" href="https://opensea.io/collection/chain-mandala" />
+        </LogoLinks>
       </BlurbHolder>
     </TopRow>
     <PreviousNFTs />
