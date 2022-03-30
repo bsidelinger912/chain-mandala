@@ -56,7 +56,7 @@ const LinkHeader = styled(Typography)`
 `;
 
 const MintButton = styled(Button)`
-  margin: 30px 0 20px;
+  margin: 10px 0;
 `;
 
 const ContractLink = styled(MuiLink)`
@@ -73,7 +73,7 @@ const ContractAddress = styled.span`
 
 const LogoLinks = styled.div`
   display: flex;
-  margin: 30px 0 0;
+  align-items: center;
 `;
 
 const Home: React.FC<Props> = ({ onMintButtonClick }) => (
@@ -90,9 +90,6 @@ const Home: React.FC<Props> = ({ onMintButtonClick }) => (
           You can generate as many Mandala&apos;s as you want and only mint when you get one you love.  You need a
           MDLA token to be able to mint a Mandala. Likely you got here because you&apos;ve been given a token, if not you
           can check back here later as we may provide additional ways to get a MDLA token.
-        </p>
-        <p>
-          You also need to make sure you have Polygon set up on your wallet, the project is currently only deployed to Polygon.
         </p>
 
         <MintButton
@@ -114,9 +111,21 @@ const Home: React.FC<Props> = ({ onMintButtonClick }) => (
           </ContractLink>
         </div>
 
-        <LogoLinks>
-          <LogoLink image="./opensea-logo.png" tooltipText="View on Opensea" href="https://opensea.io/collection/chain-mandala" />
-        </LogoLinks>
+        <div>
+          <LinkHeader variant="h6">View site on unstoppable domains</LinkHeader>
+
+          If you have a web3 capable browser, visit:
+          {' '}
+          <MuiLink href="http://chainmandala.crypto">chainmandala.crypto</MuiLink>
+
+        </div>
+
+        <div>
+          <LinkHeader variant="h6">More links:</LinkHeader>
+          <LogoLinks>
+            <LogoLink image="./opensea-logo.png" tooltipText="View on Opensea" href="https://opensea.io/collection/chain-mandala" />
+          </LogoLinks>
+        </div>
       </BlurbHolder>
     </TopRow>
     <PreviousNFTs />

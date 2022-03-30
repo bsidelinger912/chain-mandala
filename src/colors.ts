@@ -62,7 +62,6 @@ export function getRandomColor(birthDate: number): string {
   const colors = getColors(birthDate);
   const index = Math.max(0, Math.round(Math.random() * colors.length) - 1);
   const color = colors[index];
-  console.log(color);
-  console.log(index);
+
   return color;
 }

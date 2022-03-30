@@ -17,7 +17,10 @@ export interface PrevNFTWithTokenId {
 
 export interface ChainDataContext {
   latestTokenId?: number;
-  getPreviousNFTs: (numberOfNFTs: number, offset?: number) => Promise<PrevNFTWithTokenId[]>;
+  loading: boolean;
+  data?: PrevNFTWithTokenId[];
+  error?: string;
+  reload: () => void;
 }
 
 interface TokenQueries {
@@ -38,6 +41,9 @@ const getTokenUriAndOwner = async (tokenId: number): Promise<TokenQueries> => {
 
 const ChainDataProvider: React.FC = ({ children }) => {
   const [latestTokenId, setLatestTokenId] = useState<number>();
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<PrevNFTWithTokenId[]>();
+  const [error, setError] = useState<string>();
 
   const getTokenCount = async (): Promise<number> => {
     const latestToken = await nftContract.methods.getLatestTokenId().call();
@@ -46,25 +52,21 @@ const ChainDataProvider: React.FC = ({ children }) => {
     return latestTokenNumber;
   };
 
-  useEffect(() => {
-    getTokenCount();
-  }, []);
-
   const getPreviousNFTs = useCallback(async (numberOfNFTs: number, offset?: number) => {
     const latestTokenNumber = await getTokenCount();
 
     const promises = [];
 
     const startNumber = typeof offset === 'undefined' ? latestTokenNumber : latestTokenNumber - offset;
-    const endNumber = Math.max(1, startNumber - numberOfNFTs);
+    const endNumber = Math.max(0, startNumber - numberOfNFTs);
 
-    for (let i = startNumber; i >= endNumber; i--) {
+    for (let i = startNumber; i > endNumber; i--) {
       promises.push(getTokenUriAndOwner(i));
     }
 
     const results: TokenQueries[] = await Promise.all(promises);
 
-    return results.map((result, index) => {
+    const mappedResults = results.map((result, index) => {
       const encoded = result.tokenUri.split(';base64,')[1];
       const json = atob(encoded);
       return {
@@ -73,12 +75,40 @@ const ChainDataProvider: React.FC = ({ children }) => {
         owner: result.owner,
       } as PrevNFTWithTokenId;
     });
+    setData((d) => mappedResults.concat(d || []));
   }, []);
+
+  const reload = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const prevTokenCount = latestTokenId || 0;
+      const newTokenCount = await getTokenCount();
+      const newTokens = newTokenCount - prevTokenCount;
+
+      getPreviousNFTs(newTokens);
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }, [getPreviousNFTs, latestTokenId]);
+
+  useEffect(() => {
+    getTokenCount();
+
+    try {
+      getPreviousNFTs(20);
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }, [getPreviousNFTs]);
 
   const value = useMemo<ChainDataContext>(() => ({
     latestTokenId,
-    getPreviousNFTs,
-  }), [getPreviousNFTs, latestTokenId]);
+    data,
+    loading,
+    error,
+    reload,
+  }), [latestTokenId, data, loading, error, reload]);
 
   return (
     <ctx.Provider value={value}>{children}</ctx.Provider>

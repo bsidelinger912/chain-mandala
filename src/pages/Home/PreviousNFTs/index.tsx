@@ -9,8 +9,8 @@ import Typography from '@mui/material/Typography';
 
 import CenteredLoader from '../../../components/CenteredLoader';
 import NFTDisplay from './NFTDisplay';
-import usePreviousNFTs from '../../../chainData/usePreviousNFTs';
 import { singleColumnWidth } from '../../../cssConstants';
+import { useChainData } from '../../../chainData/Provider';
 
 const Wrapper = styled.div`
   margin-top: 30px;
@@ -18,23 +18,23 @@ const Wrapper = styled.div`
 
 const ListWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
   min-height: 200px;
+  margin: 0 -10px;
 `;
 
 const Item = styled.div`
   width: calc(25% - 20px);
   box-sizing: border-box;
-  margin: 20px 0;
+  margin: 10px;
 
   @media (max-width: ${singleColumnWidth}) {
-    width: calc(50% - 10px);
+    width: calc(50% - 20px);
   }
 `;
 
 const PreviousNFTs: React.FC = () => {
-  const { data } = usePreviousNFTs(20, 1);
+  const { data } = useChainData();
 
   return (
     <Wrapper>
@@ -42,7 +42,7 @@ const PreviousNFTs: React.FC = () => {
       <ListWrapper>
         {!data ? <CenteredLoader /> : (
           <>
-            {data.map((tokenInfo) => (
+            {data.slice(1).map((tokenInfo) => (
               <Item key={tokenInfo.tokenId}>
                 <NFTDisplay metaData={tokenInfo.metaData} tokenId={tokenInfo.tokenId} owner={tokenInfo.owner} />
               </Item>

@@ -4,6 +4,7 @@ import { useRecoilState } from 'recoil';
 import { TransactionReceipt } from 'web3-core';
 
 import { useAuth } from '../../../auth/AuthProvider';
+import { useChainData } from '../../../chainData/Provider';
 import { NFTMetaData, TransactionConfig } from '../../../types';
 import { createMetaData } from '../../../util';
 import {
@@ -53,6 +54,7 @@ export default function useMintNFT(): UseMintNFT {
   const [transactionHash, setTransactionHash] = useState<string>();
 
   const { account } = useAuth();
+  const { reload } = useChainData();
 
   const clearMintState = (): void => {
     setMintStatus('idle');
@@ -97,6 +99,7 @@ export default function useMintNFT(): UseMintNFT {
             setImageUriState(undefined);
             setShapesState(emptyShapes);
             setApproving({ status: 'idle' });
+            reload();
           } else {
             setMintError('Error minting token');
             setMintStatus('error');
