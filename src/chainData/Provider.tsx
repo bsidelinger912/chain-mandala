@@ -96,7 +96,7 @@ const ChainDataProvider: React.FC = ({ children }) => {
     getTokenCount();
 
     try {
-      getPreviousNFTs(20);
+      getPreviousNFTs(50);
     } catch (e: any) {
       setError(e.message);
     }
