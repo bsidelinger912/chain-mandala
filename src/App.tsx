@@ -7,7 +7,6 @@ import {
 } from '@apollo/client';
 
 import AuthProvider from './auth/AuthProvider';
-import ChainDataProvider from './chainData/Provider';
 import { pageWidth, textColor } from './cssConstants';
 import Header from './Header';
 
@@ -49,21 +48,19 @@ const App: React.FC = () => {
   return (
     <RecoilRoot>
       <AuthProvider>
-        <ChainDataProvider>
-          <ApolloProvider client={client}>
-            <ThemeProvider theme={theme}>
-              <Wrapper>
-                <Page>
-                  <Header />
-                  <Home onMintButtonClick={() => setCreateModalOpen(true)} />
-                  <Modal open={createModalOpen} onClose={onCreateModalClose}>
-                    <Create />
-                  </Modal>
-                </Page>
-              </Wrapper>
-            </ThemeProvider>
-          </ApolloProvider>
-        </ChainDataProvider>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            <Wrapper>
+              <Page>
+                <Header />
+                <Home onMintButtonClick={() => setCreateModalOpen(true)} />
+                <Modal open={createModalOpen} onClose={onCreateModalClose}>
+                  <Create />
+                </Modal>
+              </Page>
+            </Wrapper>
+          </ThemeProvider>
+        </ApolloProvider>
       </AuthProvider>
     </RecoilRoot>
   );

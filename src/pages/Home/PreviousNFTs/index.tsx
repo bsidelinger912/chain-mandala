@@ -46,7 +46,7 @@ const Item = styled.div`
 
 const GET_TOKENS = gql`
   query PreviousTokensQuery {
-    tokens {
+    tokens (orderBy: id, orderDirection:desc) {
       tokenId
       tokenURI
       owner
@@ -55,7 +55,7 @@ const GET_TOKENS = gql`
 `;
 
 const PreviousNFTs: React.FC = () => {
-  const { data: gqlData } = useQuery<TokensQuery>(GET_TOKENS);
+  const { data: gqlData } = useQuery<TokensQuery>(GET_TOKENS, { pollInterval: 30000 });
 
   return (
     <Wrapper>

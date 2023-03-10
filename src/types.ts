@@ -21,3 +21,9 @@ export type NFTMetaData = {
 export type TransactionConfig = TransactionConfigCore & {
   maxPriorityFeePerGas?: string;
 };
+
+export interface PrevNFTWithTokenId {
+  metaData: NFTMetaData;
+  tokenId: number;
+  owner: string;
+}

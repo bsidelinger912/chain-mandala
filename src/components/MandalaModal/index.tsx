@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { PrevNFTWithTokenId } from '../../chainData/Provider';
+import { PrevNFTWithTokenId } from '../../types';
 import Attribute from './Attribute';
 import { useAuth } from '../../auth/AuthProvider';
 import Modal from '../Modal';

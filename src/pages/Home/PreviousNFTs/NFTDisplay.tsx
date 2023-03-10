@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../../auth/AuthProvider';
 
-import { PrevNFTWithTokenId } from '../../../chainData/Provider';
+import { PrevNFTWithTokenId } from '../../../types';
 import MandalaModal from '../../../components/MandalaModal';
 
 export type Props = PrevNFTWithTokenId;

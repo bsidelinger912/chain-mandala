@@ -24,7 +24,7 @@ type TokensQuery = {
 
 const GET_TOKENS = gql`
   query LatestTokenQuery {
-    tokens {
+    tokens (orderBy: id, orderDirection:desc, first: 1){
       tokenId
       tokenURI
       owner
@@ -49,7 +49,7 @@ const Image = styled.img`
 
 const LatestNFT: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { data: gqlData } = useQuery<TokensQuery>(GET_TOKENS);
+  const { data: gqlData } = useQuery<TokensQuery>(GET_TOKENS, { pollInterval: 30000 });
 
   if (!gqlData) {
     return <CenteredLoader />;
@@ -59,14 +59,7 @@ const LatestNFT: React.FC = () => {
     return <Typography>Be the first to mint!</Typography>;
   }
 
-  const latestToken = gqlData.tokens.reduce<Token>((acc, token) => {
-    if (parseInt(token.tokenId, 10) > parseInt(acc.tokenId, 10)) {
-      return token;
-    }
-
-    return acc;
-  }, gqlData.tokens[0]);
-
+  const latestToken = gqlData.tokens[0];
   const metaData = extractMetaData(latestToken.tokenURI);
   const tokenId = parseInt(latestToken.tokenId, 10);
 

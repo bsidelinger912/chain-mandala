@@ -112,15 +112,6 @@ const Home: React.FC<Props> = ({ onMintButtonClick }) => (
         </div>
 
         <div>
-          <LinkHeader variant="h6">View site on unstoppable domains</LinkHeader>
-
-          If you have a web3 capable browser, visit:
-          {' '}
-          <MuiLink href="http://chainmandala.crypto">chainmandala.crypto</MuiLink>
-
-        </div>
-
-        <div>
           <LinkHeader variant="h6">More links:</LinkHeader>
           <LogoLinks>
             <LogoLink image="./opensea-logo.png" tooltipText="View on Opensea" href="https://opensea.io/collection/chain-mandala" />
