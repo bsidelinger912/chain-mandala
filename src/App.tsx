@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {
+  ApolloClient, InMemoryCache, ApolloProvider,
+} from '@apollo/client';
 
 import AuthProvider from './auth/AuthProvider';
 import ChainDataProvider from './chainData/Provider';
@@ -11,6 +14,12 @@ import Header from './Header';
 import Home from './pages/Home';
 import Create from './pages/Create';
 import Modal from './components/Modal';
+import config from './config';
+
+const client = new ApolloClient({
+  uri: config.graphQLApi,
+  cache: new InMemoryCache(),
+});
 
 const theme = createTheme({
   palette: {
@@ -41,17 +50,19 @@ const App: React.FC = () => {
     <RecoilRoot>
       <AuthProvider>
         <ChainDataProvider>
-          <ThemeProvider theme={theme}>
-            <Wrapper>
-              <Page>
-                <Header />
-                <Home onMintButtonClick={() => setCreateModalOpen(true)} />
-                <Modal open={createModalOpen} onClose={onCreateModalClose}>
-                  <Create />
-                </Modal>
-              </Page>
-            </Wrapper>
-          </ThemeProvider>
+          <ApolloProvider client={client}>
+            <ThemeProvider theme={theme}>
+              <Wrapper>
+                <Page>
+                  <Header />
+                  <Home onMintButtonClick={() => setCreateModalOpen(true)} />
+                  <Modal open={createModalOpen} onClose={onCreateModalClose}>
+                    <Create />
+                  </Modal>
+                </Page>
+              </Wrapper>
+            </ThemeProvider>
+          </ApolloProvider>
         </ChainDataProvider>
       </AuthProvider>
     </RecoilRoot>

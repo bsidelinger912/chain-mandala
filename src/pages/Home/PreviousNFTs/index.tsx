@@ -6,11 +6,22 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
+import { useQuery, gql } from '@apollo/client';
 
 import CenteredLoader from '../../../components/CenteredLoader';
 import NFTDisplay from './NFTDisplay';
 import { singleColumnWidth } from '../../../cssConstants';
-import { useChainData } from '../../../chainData/Provider';
+import { extractMetaData } from '../../../util';
+
+type Token = {
+  tokenId: string;
+  tokenURI: string;
+  owner: string;
+};
+
+type TokensQuery = {
+  tokens: Token[];
+}
 
 const Wrapper = styled.div`
   margin-top: 30px;
@@ -33,20 +44,34 @@ const Item = styled.div`
   }
 `;
 
+const GET_TOKENS = gql`
+  query PreviousTokensQuery {
+    tokens {
+      tokenId
+      tokenURI
+      owner
+    }
+  }
+`;
+
 const PreviousNFTs: React.FC = () => {
-  const { data } = useChainData();
+  const { data: gqlData } = useQuery<TokensQuery>(GET_TOKENS);
 
   return (
     <Wrapper>
       <Typography variant="subtitle1">Previous Mandalas</Typography>
       <ListWrapper>
-        {!data ? <CenteredLoader /> : (
+        {!gqlData ? <CenteredLoader /> : (
           <>
-            {data.slice(1).map((tokenInfo) => (
-              <Item key={tokenInfo.tokenId}>
-                <NFTDisplay metaData={tokenInfo.metaData} tokenId={tokenInfo.tokenId} owner={tokenInfo.owner} />
-              </Item>
-            ))}
+            {gqlData.tokens.slice(1).map((token) => {
+              const metadata = extractMetaData(token.tokenURI);
+
+              return (
+                <Item key={token.tokenId}>
+                  <NFTDisplay metaData={metadata} tokenId={parseInt(token.tokenId, 10)} owner={token.owner} />
+                </Item>
+              );
+            })}
           </>
         )}
       </ListWrapper>
